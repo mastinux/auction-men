@@ -56,8 +56,8 @@ ROOT_URLCONF = 'auction_men.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],  # directory for new templates
+        'APP_DIRS': True,  # there is a template directory for each project package
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
@@ -79,10 +79,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'auctions_db',
-	'USER': 'auctions_admin',
-	'PASSWORD': 'mysqldata',
-	'HOST': '',
-	'PORT': '',
+        'USER': 'auctions_admin',
+        'PASSWORD': 'mysqldata',
+        'HOST': '',
+        'PORT': '',
     }
 }
 

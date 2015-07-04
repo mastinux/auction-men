@@ -4,25 +4,21 @@ from django.contrib.auth.models import User
 
 
 class AuctionsUser(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, unique=True)
     # TODO integrare direttamente gli attributi di User
-    # per evitare creazione della tabella auth_user
+    # per evitare di avere la foreign key su Users
 
     def __unicode__(self):
         return self.user.username
 
     def all(self):
         AuctionsUser.objects.all()
-'''
-    def __init__(self, user):
-        self.user = user
-    # TODO problemi nel salvare da django shell:
-    # object has no attribute '_state'
-'''
 
+
+# data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
 class Category(models.Model):
-    category_name = models.CharField(max_length=100, unique=True)
-    parent = models.ForeignKey('self', null=True)
+    category_name = models.CharField(max_length=100, unique=True, null=False)
+    parent = models.ForeignKey('self', null=True, blank=True, default=None)
     level = models.IntegerField(default=0)
 
     def __unicode__(self):
@@ -37,16 +33,10 @@ class Category(models.Model):
         else:
             return False
 
-'''    def __init__(self, category_name, parent=None, level=0):
-        self.category_name = category_name
-        self.parent = parent
-        self.level = level
-'''
-
 
 class Product(models.Model):
-    product_name = models.CharField(max_length=100)
-    description = models.CharField(max_length=500)
+    product_name = models.CharField(max_length=100, blank=False, null=False)
+    description = models.CharField(max_length=500, blank=True)
     start_price = models.FloatField()
     deadline_time = models.DateTimeField('deadline time')
     seller = models.ForeignKey(AuctionsUser)
@@ -58,16 +48,19 @@ class Product(models.Model):
     def all(self):
         Product.objects.all()
 
-'''
-    def __init__(self, product_name, description, start_price,
-                 deadline_time, seller, category):
-        self.product_name = product_name
-        self.description = description
-        self.start_price = start_price
-        self.deadline_time = deadline_time
-        self.seller = seller
-        self.category = category
-'''
+
+# TODO continue developing image manager tools
+# problems viewing all images by admin
+class Image(models.Model):
+    product_name = models.ForeignKey(Product)
+    image = models.ImageField()
+
+    def __unicode__(self):
+        return self.product_name
+
+    def all(self):
+        Image.objects.all()
+
 
 class Bid(models.Model):
     product_name = models.OneToOneField(Product)
@@ -80,11 +73,3 @@ class Bid(models.Model):
 
     def all(self):
         Bid.objects.all()
-
-'''    def __init__(self, product_name, bidder, amount,
-                 bidding_time):
-        self.product_name = product_name
-        self.bidder = bidder
-        self.amount = amount
-        self.bidding_time = bidding_time
-'''

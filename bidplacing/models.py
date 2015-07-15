@@ -1,31 +1,28 @@
 from django.db import models
 from django.contrib.auth.models import User
-# Create your models here.
+from django.utils import timezone
+from datetime import timedelta
 
-
+'''
 class AuctionsUser(models.Model):
-    user = models.ForeignKey(User, unique=True)
-    # TODO integrare direttamente gli attributi di User
-    # per evitare di avere la foreign key su Users
+    user = models.OneToOneField(User)
 
     def __unicode__(self):
         return self.user.username
 
     def all(self):
         AuctionsUser.objects.all()
+'''
 
 
 # data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
 class Category(models.Model):
-    category_name = models.CharField(max_length=100, unique=True, null=False)
+    category_name = models.CharField(max_length=255, unique=True, null=False)
     parent = models.ForeignKey('self', null=True, blank=True, default=None)
     level = models.IntegerField(default=0)
 
     def __unicode__(self):
         return self.category_name
-
-    def all(self):
-        Category.objects.all()
 
     def is_top_category(self):
         if self.level == 0:
@@ -39,14 +36,27 @@ class Product(models.Model):
     description = models.CharField(max_length=500, blank=True)
     start_price = models.FloatField()
     deadline_time = models.DateTimeField('deadline time')
-    seller = models.ForeignKey(AuctionsUser)
+    seller = models.ForeignKey(User)
     category = models.ForeignKey(Category)
 
     def __unicode__(self):
         return self.product_name
 
-    def all(self):
-        Product.objects.all()
+    @staticmethod
+    def get_user_products(user):
+        user_tmp = User.objects.get(username=user)
+        return Product.objects.filter(seller=user_tmp)
+
+    @staticmethod
+    def get_ranged_products(start, end):
+        return Product.objects.filter(start_price__gte=start).exclude(start_price__gt=end)
+
+    @staticmethod
+    def get_expiring_auctions(m=0, h=0, d=0):
+        start_time = timezone.now()
+        end_time = start_time + timedelta(minutes=m) + timedelta(hours=h) + timedelta(days=d)
+        return Product.objects.filter(deadline_time__gt=start_time, deadline_time__lt=end_time)
+# TODO continue adding new methods
 
 
 # TODO continue developing image manager tools
@@ -58,18 +68,12 @@ class Image(models.Model):
     def __unicode__(self):
         return self.product_name
 
-    def all(self):
-        Image.objects.all()
-
 
 class Bid(models.Model):
     product_name = models.OneToOneField(Product)
-    bidder = models.ForeignKey(AuctionsUser)
+    bidder = models.ForeignKey(User)
     amount = models.FloatField()
     bidding_time = models.DateTimeField('bidding time')
 
     def __unicode__(self):
         return self.product_name, self.bidder, self.amount
-
-    def all(self):
-        Bid.objects.all()

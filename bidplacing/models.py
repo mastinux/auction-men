@@ -1,28 +1,19 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.db.models import Max
 from datetime import timedelta
 
-'''
-class AuctionsUser(models.Model):
-    user = models.OneToOneField(User)
 
-    def __unicode__(self):
-        return self.user.username
-
-    def all(self):
-        AuctionsUser.objects.all()
-'''
-
-
-# data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
+# category data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True, null=False)
     parent = models.ForeignKey('self', null=True, blank=True, default=None)
     level = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return self.category_name
+        string = "%s [parent:%s, level=%s]" % (self.category_name, self.parent, self.level)
+        return string
 
     def is_top_category(self):
         if self.level == 0:
@@ -35,12 +26,15 @@ class Product(models.Model):
     product_name = models.CharField(max_length=100, blank=False, null=False)
     description = models.CharField(max_length=500, blank=True)
     start_price = models.FloatField()
+    insertion_time = models.DateTimeField(auto_now_add=True, blank=True)
     deadline_time = models.DateTimeField('deadline time')
     seller = models.ForeignKey(User)
     category = models.ForeignKey(Category)
 
     def __unicode__(self):
-        return self.product_name
+        string = "%s start_price=%s deadline=%s seller=%s" % \
+                 (self.product_name, self.start_price, self.deadline_time, self.seller)
+        return string
 
     @staticmethod
     def get_user_products(user):
@@ -56,24 +50,63 @@ class Product(models.Model):
         start_time = timezone.now()
         end_time = start_time + timedelta(minutes=m) + timedelta(hours=h) + timedelta(days=d)
         return Product.objects.filter(deadline_time__gt=start_time, deadline_time__lt=end_time)
-# TODO continue adding new methods
 
+    @staticmethod
+    def get_last_inserts(m=0, h=0, d=0):
+        start_time = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
+        return Product.objects.filter(insertion_time__gt=start_time)
 
-# TODO continue developing image manager tools
-# problems viewing all images by admin
-class Image(models.Model):
-    product_name = models.ForeignKey(Product)
-    image = models.ImageField()
+    @staticmethod
+    def get_category_products(category_name):
+        category = Category.objects.get(category_name=category_name)
+        return Product.objects.filter(category__exact=category)
 
-    def __unicode__(self):
-        return self.product_name
+    def get_best_bid(self):
+        product = Product.objects.get(product_name=self.product_name,
+                                      deadline_time=self.deadline_time, seller=self.seller)
+        max_bid = product.bid_set.all().aggregate(Max('amount'))
+        # it doesn't matter whose is the best bid because we call the method on a product object
+        return max_bid
 
 
 class Bid(models.Model):
-    product_name = models.OneToOneField(Product)
+    product_name = models.ForeignKey(Product)
     bidder = models.ForeignKey(User)
     amount = models.FloatField()
     bidding_time = models.DateTimeField('bidding time')
 
     def __unicode__(self):
-        return self.product_name, self.bidder, self.amount
+        string = "%s bidder=%s amount=%s bidding_time=%s" % \
+                 (self.product_name, self.bidder, self.amount, self.bidding_time)
+        return string
+
+    @staticmethod
+    def get_placed_bids(username):
+        user = User.objects.get(username=username)
+        return Bid.objects.filter(bidder=user)
+
+# TODO : improve using API
+    @staticmethod
+    def get_expired_placed_bids(username):
+        bids = Bid.get_placed_bids(username)
+        now = timezone.now()
+        expired_bids = []
+        for bid in bids:
+            product = Product.objects.get(product_name=bid.product_name)
+            if now.__gt__(product.deadline_time):
+                expired_bids.append(bid)
+                break
+        return expired_bids
+
+# TODO : improve using API
+    @staticmethod
+    def get_coming_placed_bids(username):
+        bids = Bid.get_placed_bids(username)
+        now = timezone.now()
+        expired_bids = []
+        for bid in bids:
+            product = Product.objects.get(product_name=bid.product_name)
+            if product.deadline_time.__gt__(now):
+                expired_bids.append(bid)
+                break
+        return expired_bids

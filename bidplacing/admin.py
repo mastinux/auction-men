@@ -20,7 +20,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class BidAdmin(admin.ModelAdmin):
-    fields = ['product_name', 'bidder', 'amount', 'bidding_time']
+    fields = ['product_name', 'bidder', 'amount']
     list_display = ['product_name', 'bidder', 'amount', 'bidding_time']
     search_fields = ['product_name']
 

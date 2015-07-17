@@ -36,6 +36,11 @@ class Product(models.Model):
                  (self.product_name, self.start_price, self.deadline_time, self.seller)
         return string
 
+    def save(self, *args, **kwargs):
+        if self.deadline_time.__gt__(timezone.now())\
+                and self.start_price >= 0:
+            super(Product, self).save(*args, **kwargs)
+
     @staticmethod
     def get_user_products(user):
         user_tmp = User.objects.get(username=user)
@@ -73,12 +78,18 @@ class Bid(models.Model):
     product_name = models.ForeignKey(Product)
     bidder = models.ForeignKey(User)
     amount = models.FloatField()
-    bidding_time = models.DateTimeField('bidding time')
+    bidding_time = models.DateTimeField(auto_now_add=True, blank=True)
 
     def __unicode__(self):
         string = "%s bidder=%s amount=%s bidding_time=%s" % \
                  (self.product_name, self.bidder, self.amount, self.bidding_time)
         return string
+
+    def save(self, *args, **kwargs):
+        if self.amount > 0\
+                and timezone.now().__le__(self.product_name.deadline_time)\
+                and self.amount > self.product_name.get_best_bid():
+            super(Bid, self).save(*args, **kwargs)
 
     @staticmethod
     def get_placed_bids(username):

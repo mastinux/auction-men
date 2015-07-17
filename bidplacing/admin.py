@@ -14,6 +14,7 @@ class ProductAdmin(admin.ModelAdmin):
               'deadline_time', 'seller', 'category']
     list_display = ['product_name', 'description', 'start_price',
                     'deadline_time', 'seller', 'category']
+    search_fields = ['product_name']
     list_filter = ('deadline_time',)
     date_hierarchy = 'deadline_time'
 
@@ -21,6 +22,7 @@ class ProductAdmin(admin.ModelAdmin):
 class BidAdmin(admin.ModelAdmin):
     fields = ['product_name', 'bidder', 'amount', 'bidding_time']
     list_display = ['product_name', 'bidder', 'amount', 'bidding_time']
+    search_fields = ['product_name']
 
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Product, ProductAdmin)

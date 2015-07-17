@@ -32,7 +32,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category)
 
     def __unicode__(self):
-        string = "%s start_price=%s deadline=%s seller=%s" % \
+        string = "%s [start_price=%s deadline=%s seller=%s]" % \
                  (self.product_name, self.start_price, self.deadline_time, self.seller)
         return string
 
@@ -85,28 +85,12 @@ class Bid(models.Model):
         user = User.objects.get(username=username)
         return Bid.objects.filter(bidder=user)
 
-# TODO : improve using API
     @staticmethod
     def get_expired_placed_bids(username):
-        bids = Bid.get_placed_bids(username)
-        now = timezone.now()
-        expired_bids = []
-        for bid in bids:
-            product = Product.objects.get(product_name=bid.product_name)
-            if now.__gt__(product.deadline_time):
-                expired_bids.append(bid)
-                break
-        return expired_bids
+        bidder = User.objects.get(username=username)
+        return Bid.objects.filter(product_name__deadline_time__lt=timezone.now(), bidder=bidder)
 
-# TODO : improve using API
     @staticmethod
     def get_coming_placed_bids(username):
-        bids = Bid.get_placed_bids(username)
-        now = timezone.now()
-        expired_bids = []
-        for bid in bids:
-            product = Product.objects.get(product_name=bid.product_name)
-            if product.deadline_time.__gt__(now):
-                expired_bids.append(bid)
-                break
-        return expired_bids
+        bidder = User.objects.get(username=username)
+        return Bid.objects.filter(product_name__deadline_time__gt=timezone.now(), bidder=bidder)

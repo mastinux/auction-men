@@ -37,9 +37,11 @@ class Product(models.Model):
         return string
 
     def save(self, *args, **kwargs):
-        if self.deadline_time.__gt__(timezone.now())\
-                and self.start_price >= 0:
-            super(Product, self).save(*args, **kwargs)
+        if self.deadline_time.__le__(timezone.now()):
+            raise ValueError("Deadline_time could not be before now")
+        if self.start_price < 0:
+            raise ValueError("Start_price could not be negative")
+        super(Product, self).save(*args, **kwargs)
 
     @staticmethod
     def get_user_products(user):
@@ -71,7 +73,7 @@ class Product(models.Model):
                                       deadline_time=self.deadline_time, seller=self.seller)
         max_bid = product.bid_set.all().aggregate(Max('amount'))
         # it doesn't matter whose is the best bid because we call the method on a product object
-        return max_bid
+        return max_bid.get('amount__max')
 
 
 class Bid(models.Model):
@@ -86,10 +88,14 @@ class Bid(models.Model):
         return string
 
     def save(self, *args, **kwargs):
-        if self.amount > 0\
-                and timezone.now().__le__(self.product_name.deadline_time)\
-                and self.amount > self.product_name.get_best_bid():
-            super(Bid, self).save(*args, **kwargs)
+        if self.amount < 0:
+            raise ValueError("Amount could not be negative")
+        if timezone.now().__gt__(self.product_name.deadline_time):
+            raise ValueError("Could not bid on an expired auction")
+        if self.amount < self.product_name.get_best_bid():
+            raise ValueError("Could not bid an amount lower than max bid(%s) for the product"
+                             % self.product_name.get_best_bid())
+        super(Bid, self).save(*args, **kwargs)
 
     @staticmethod
     def get_placed_bids(username):

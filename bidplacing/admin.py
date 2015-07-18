@@ -13,7 +13,7 @@ class ProductAdmin(admin.ModelAdmin):
     fields = ['product_name', 'description', 'start_price',
               'deadline_time', 'seller', 'category']
     list_display = ['product_name', 'description', 'start_price',
-                    'deadline_time', 'seller', 'category']
+                    'insertion_time', 'deadline_time', 'seller', 'category']
     search_fields = ['product_name']
     list_filter = ('deadline_time',)
     date_hierarchy = 'deadline_time'

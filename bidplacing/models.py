@@ -23,6 +23,7 @@ class Category(models.Model):
 
 
 class Product(models.Model):
+    # TODO : add a field to know if product is a product or a service
     product_name = models.CharField(max_length=100, blank=False, null=False)
     description = models.CharField(max_length=500, blank=True)
     start_price = models.FloatField()
@@ -49,11 +50,21 @@ class Product(models.Model):
         return Product.objects.filter(seller=user_tmp)
 
     @staticmethod
+    def get_expired_user_products(user):
+        user_tmp = User.objects.get(username=user)
+        return Product.objects.filter(seller=user_tmp, deadline_time__lt=timezone.now())
+
+    @staticmethod
+    def get_coming_user_products(user):
+        user_tmp = User.objects.get(username=user)
+        return Product.objects.filter(seller=user_tmp).exclude(deadline_time__lt=timezone.now())
+
+    @staticmethod
     def get_ranged_products(start, end):
         return Product.objects.filter(start_price__gte=start).exclude(start_price__gt=end)
 
     @staticmethod
-    def get_expiring_auctions(m=0, h=0, d=0):
+    def get_coming_auctions(m=0, h=0, d=0):
         start_time = timezone.now()
         end_time = start_time + timedelta(minutes=m) + timedelta(hours=h) + timedelta(days=d)
         return Product.objects.filter(deadline_time__gt=start_time, deadline_time__lt=end_time)
@@ -62,6 +73,14 @@ class Product(models.Model):
     def get_last_inserts(m=0, h=0, d=0):
         start_time = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
         return Product.objects.filter(insertion_time__gt=start_time)
+
+    @staticmethod
+    def get_last_inserts_expired(m=0, h=0, d=0):
+        return Product.get_last_inserts(m, h, d).filter(deadline_time__lt=timezone.now())
+
+    @staticmethod
+    def get_last_inserts_coming(m=0, h=0, d=0):
+        return Product.get_last_inserts(m, h, d).filter(deadline_time__gt=timezone.now())
 
     @staticmethod
     def get_category_products(category_name):

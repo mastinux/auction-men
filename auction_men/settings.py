@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'crispy_forms',
     # myapps
     'bidplacing',
+    'auth_system',
 )
 
 MIDDLEWARE_CLASSES = (

@@ -4,12 +4,10 @@ import datetime
 # Create your views here.
 
 
-def index(request):
-    t = loader.get_template('../templates/bidplacing/index.html')
-    c = RequestContext(request)
-    return HttpResponse(t.render(c))
-
-
-def current_datetime(request):
-    now = datetime.datetime.now()
-    return HttpResponse(now)
+def main_page(request, message={}):
+    context = {}
+    if request.user.is_authenticated():
+        context['user'] = request.user
+    context['message'] = message
+    template = loader.get_template('index.html')
+    return HttpResponse(template.render(context))

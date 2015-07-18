@@ -29,12 +29,22 @@
             </li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            {% if not user.is_authenticated %}
+            {% if user.is_authenticated %}
+                <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"> {{ user.username | capfirst }} <span class="caret"></span></a>
+                  <ul class="dropdown-menu">
+                    <li><a href="{% url 'auth:logout' %}">logout <span class="sr-only">(current)</span></a></li>
+                    <!-- <li><a href="#">Another action</a></li>
+                    <li><a href="#">Something else here</a></li>
+                    <li role="separator" class="divider"></li>
+                    <li class="dropdown-header">Nav header</li>
+                    <li><a href="#">Separated link</a></li>
+                    <li><a href="#">One more separated link</a></li>-->
+                  </ul>
+                </li>
+            {% else %}
                 <li><a href="{% url 'auth:register_page' %}">Register</a></li>
                 <li><a href="{% url 'auth:login_page' %}">Login</a></li>
-            {% endif %}
-            {% if user.is_authenticated %}
-                <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
             {% endif %}
           </ul>
         </div><!--/.nav-collapse -->

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 
-{% block content %}
+{% block info %}
+
     {% if message %}
         <div class="alert alert-success">
            {{ message }}
@@ -10,9 +11,10 @@
     <div>
         <br>
         {% if user.is_authenticated %}
-            {{ user.username }}'s home page
+            {{ user.username }}'s profile page
         {% else %}
             Hello, to see more contents please sign up!
         {% endif %}
     </div>
+
 {% endblock %}

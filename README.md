@@ -4,5 +4,5 @@
     
 ## create the folder static
 
-    python manage.py collecstatic
+    python manage.py collectstatic
     

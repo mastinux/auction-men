@@ -15,6 +15,10 @@ class Category(models.Model):
         string = "%s [parent:%s, level=%s]" % (self.category_name, self.parent, self.level)
         return string
 
+    @staticmethod
+    def get_top_categories():
+        return Category.objects.filter(level=0)
+
     def is_top_category(self):
         if self.level == 0:
             return True

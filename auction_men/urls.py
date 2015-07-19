@@ -9,5 +9,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^bidplacing/', include('bidplacing.urls', namespace='bidplacing')),
     url('^$', 'auction_men.views.main_page', name='main_page'),
-    url(r'auth/', include('auth_system.urls', namespace='auth'))
+    # url(r'auth/', include('auth_system.urls', namespace='auth')),
+    url(r'^accounts/', include('registration.backends.default.urls')),
+    url(r'^accounts/profile/', include('bidplacing.urls', namespace='bidplacing')),
 ]

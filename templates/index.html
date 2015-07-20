@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block info %}
-
     {% if message %}
         <div class="alert alert-success">
            {{ message }}
@@ -11,10 +10,68 @@
     <div>
         <br>
         {% if user.is_authenticated %}
-            {{ user.username }}'s home page
-        {% else %}
-            Hello, to see more contents please sign up!
+        <!-- expiring and recommended products-->
+            <h1>Expiring auctions</h1>
+            <div class="row">
+            {% for expiring_auction in expiring_auctions %}
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <img src="..." alt="product_image">
+                  <div class="caption">
+                    <h3>{{ expiring_auction.product_name }}</h3>
+                    <p>Max bid placed : {{ expiring_auction.get_best_bid }}</p>
+                    <p>Deadline time : {{ expiring_auction.deadline_time }}</p>
+                      <div class="row">
+                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                              <a href="/product/{{ expiring_auction.product_name }}" class="btn btn-primary" role="button">View Details</a>
+                          </div>
+                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                <input type="text" class="form-control" placeholder="Amount" style="max-width: 150px;">
+                          </div>
+                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                              <button type="submit" class="btn btn-default" style="margin: 0 auto;">Bid now!</button>
+                          </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+            <!-- add here recommended products -->
         {% endif %}
-    </div>
+        <!-- last insertions for all client -->
+            <h1>Last insertions</h1>
+            <div class="row">
+            {% for last_insertion in last_insertions %}
+              <div class="col-sm-6 col-md-4">
+                <div class="thumbnail">
+                  <img src="..." alt="product_image">
+                  <div class="caption">
+                    <h3>{{ last_insertion.product_name }}</h3>
+                    <p>Current price :  {% if last_insertion.get_best_bid == None %}
+                                            {{ last_insertion.start_price }}
+                                        {% else %}
+                                             {{ last_insertion.get_best_bid }}
+                                        {% endif %}</p>
+                    <p>Deadline time : {{ last_insertion.deadline_time }}</p>
 
+                    <div class="row">
+                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                              <a href="/product/{{ last_insertion.product_name }}" class="btn btn-primary" role="button">View Details</a>
+                          </div>
+                          {% if user.is_authenticated %}
+                              <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                    <input type="text" class="form-control" placeholder="Amount" style="max-width: 150px;">
+                              </div>
+                              <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                                  <button type="submit" class="btn btn-default" style="margin: 0 auto;">Bid now!</button>
+                              </div>
+                          {% endif %}
+                      </div>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+    </div>
 {% endblock %}

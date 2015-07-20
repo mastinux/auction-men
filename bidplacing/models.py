@@ -25,6 +25,9 @@ class Category(models.Model):
         else:
             return False
 
+    def get_children_category(self):
+        return Category.objects.filter(parent=self.category_name, level=self.level+1)
+
 
 class Product(models.Model):
     # TODO : add a field to know if product is a product or a service
@@ -90,6 +93,9 @@ class Product(models.Model):
     def get_category_products(category_name):
         category = Category.objects.get(category_name=category_name)
         return Product.objects.filter(category__exact=category)
+
+    def get_past_bids(self):
+        return Bid.objects.filter(product_name=self.id).order_by('bidding_time')
 
     def get_best_bid(self):
         product = Product.objects.get(product_name=self.product_name,

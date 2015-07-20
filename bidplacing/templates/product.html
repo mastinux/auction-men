@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load tz %}
+
+{% block info %}
+
+    {% if message %}
+        <div class="alert alert-success">
+           {{ message }}
+        </div>
+    {% endif %}
+
+    	<div class="row">
+  		<div class="col-sm-10"><h1>{{ product.product_name}}</h1></div>
+
+    <!--	<div class="col-sm-2"><a href="/users" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="http://www.gravatar.com/avatar/28fd20ccec6865e2d5f0e1f4446eb7bf?s=100"></a></div>-->
+    </div>
+    <hr>
+    <div class="row-fluid">
+  		<div class="col-sm-3"><!--left col-->
+
+          <ul class="list-group">
+            <li class="list-group-item text-muted">Seller's Profile</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Username</strong></span>{{ seller.username }}</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span>{{ seller.date_joined | date:"M d, Y" }}</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> {{ seller.last_login | date:"M d, Y" }}</li>
+          </ul>
+
+          <ul class="list-group">
+            <li class="list-group-item text-muted">Seller's Activities<i class="fa fa-dashboard fa-1x"></i></li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">25</span>&nbsp</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">42</span>&nbsp</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">84</span>&nbsp</li>
+          </ul>
+
+          <div class="panel panel-default">
+            <div class="panel-heading">Social Media</div>
+            <div class="panel-body">
+            	<i class="fa fa-facebook fa-2x"></i> <i class="fa fa-github fa-2x"></i> <i class="fa fa-twitter fa-2x"></i> <i class="fa fa-pinterest fa-2x"></i> <i class="fa fa-google-plus fa-2x"></i>
+            </div>
+          </div>
+
+        </div><!--/col-3-->
+    	<div class="col-sm-9">
+
+          <ul class="nav nav-tabs" id="myTab">
+            <li class="active"><a href="#current" data-toggle="tab">Current state</a></li>
+            <li><a href="#bids" data-toggle="tab">Past bids</a></li>
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="current">
+              <div class="table">
+
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                        <br>
+                        <h4>Current price: {% if product.get_best_bid == None %}
+                                            {{ product.start_price }}
+                                        {% else %}
+                                             {{ product.get_best_bid }}
+                                        {% endif %}</h4>
+                        <h4>Insert at : {{ product.insertion_time }}</h4>
+                        <h4>Deadline time : {{ product.deadline_time }}</h4>
+                        <h4>Remaining time : </h4>
+                    </tr>
+                  </thead>
+                </table>
+
+                <hr>
+
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                        <br>
+                        <div class="table">
+                          {% if user.is_authenticated %}
+                              <div class="row">
+
+                                <h3>code to place a new bid for this product</h3>
+
+                              </div>
+                          {% else %}
+                              <div>
+                                  <h4>Please sign in to bid for this product</h4>
+                              </div>
+                          {% endif %}
+                      </div>
+                    </tr>
+                  </thead>
+                </table>
+
+                <hr>
+
+                <div class="table">
+                    <table class="table table-hover table-bordered">
+                      <thead>
+                        <tr>
+                            <h1>recommended products</h1>
+                        </tr>
+                      </thead>
+                    </table>
+                </div>
+
+              </div><!--/table-resp-->
+
+              <hr>
+
+             </div><!--/tab-pane-->
+
+            <div class="tab-pane" id="bids">
+                <div class="table">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Bidder</th>
+                      <th>Bidding time</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody id="items">
+
+                    {% for item in past_bids %}
+                         <tr>
+                          <td>1</td>
+                          <td>{{ item.bidder.username }}</td>
+                          <td>{{ item.bidding_time }}</td>
+                          <td>{{ item.amount }}</td>
+                        </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                      <ul class="pagination" id="myPager">
+
+                        </ul>
+                    </div>
+                </div>
+              </div><!--/table-resp-->
+            </div>
+
+          </div><!--/tab-content-->
+
+        </div><!--/col-9-->
+    </div><!--/row-->
+
+{% endblock %}

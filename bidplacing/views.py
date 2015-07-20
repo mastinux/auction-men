@@ -1,7 +1,10 @@
+from django.contrib.auth.decorators import login_required
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.template import loader, RequestContext, response
 from django.http import HttpResponse
 from bidplacing.models import *
 from urllib import unquote
+
 # Create your views here.
 
 
@@ -61,7 +64,7 @@ def about_page(request):
 
     return HttpResponse(template.render(context))
 
-
+@login_required
 def profile_page(request):
     context = {}
     if 'message' in request.session:
@@ -74,7 +77,8 @@ def profile_page(request):
     top_categories = Category.get_top_categories()
     category_list = list([category.category_name for category in top_categories])
     context['top_categories'] = category_list
-
+    context['user_bids'] = Bid.get_placed_bids(request.user.username)
+    context['user_selling'] = Product.get_user_products(request.user.username)
     template = loader.get_template('profile.html')
 
     return HttpResponse(template.render(context))
@@ -100,3 +104,4 @@ def category_page(request):
     template = loader.get_template('category.html')
 
     return HttpResponse(template.render(context))
+

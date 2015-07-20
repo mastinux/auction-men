@@ -116,8 +116,9 @@ class Bid(models.Model):
         if timezone.now().__gt__(self.product_name.deadline_time):
             raise ValueError("Could not bid on an expired auction")
         if self.amount < self.product_name.get_best_bid():
-            raise ValueError("Could not bid an amount lower than max bid(%s) for the product"
-                             % self.product_name.get_best_bid())
+            raise ValueError(
+                "Could not bid an amount lower than max bid(%s) for the product"
+                % self.product_name.get_best_bid())
         super(Bid, self).save(*args, **kwargs)
 
     @staticmethod
@@ -128,9 +129,11 @@ class Bid(models.Model):
     @staticmethod
     def get_expired_placed_bids(username):
         bidder = User.objects.get(username=username)
-        return Bid.objects.filter(product_name__deadline_time__lt=timezone.now(), bidder=bidder)
+        return Bid.objects.filter(
+            product_name__deadline_time__lt=timezone.now(), bidder=bidder)
 
     @staticmethod
     def get_coming_placed_bids(username):
         bidder = User.objects.get(username=username)
-        return Bid.objects.filter(product_name__deadline_time__gt=timezone.now(), bidder=bidder)
+        return Bid.objects.filter(
+            product_name__deadline_time__gt=timezone.now(), bidder=bidder)

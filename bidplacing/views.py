@@ -6,9 +6,9 @@ from urllib import unquote
 # Create your views here.
 
 
-def main_page(request):
+def retrieve_basic_info(request):
     context = {}
-# TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
+
     if 'message' in request.session:
         context['message'] = request.session['message']
         del request.session['message']
@@ -16,8 +16,6 @@ def main_page(request):
     if request.user.is_authenticated():
         context['user'] = request.user
 
-# porca madompa
-# TODO : avoid redundancy for next 3 rows in all methods views
     top_categories = Category.get_top_categories()
     top_category_list = {}
     category_children_list = {}
@@ -28,6 +26,13 @@ def main_page(request):
     context['top_categories'] = top_category_list
     context['category_children_list'] = category_children_list
 
+    return context
+
+
+def main_page(request):
+    context = retrieve_basic_info(request)
+
+# TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
     expiring_auctions = Product.get_coming_auctions(d=1)
     last_insertions = Product.get_last_inserts(d=1)
 # TODO : develop recommendations system
@@ -42,24 +47,7 @@ def main_page(request):
 
 
 def contact_page(request):
-    context = {}
-
-    if 'message' in request.session:
-        context['message'] = request.session['message']
-        del request.session['message']
-
-    if request.user.is_authenticated():
-        context['user'] = request.user
-
-    top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
-
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    context = retrieve_basic_info(request)
 
     template = loader.get_template('contact.html')
 
@@ -67,24 +55,7 @@ def contact_page(request):
 
 
 def about_page(request):
-    context = {}
-
-    if 'message' in request.session:
-        context['message'] = request.session['message']
-        del request.session['message']
-
-    if request.user.is_authenticated():
-        context['user'] = request.user
-
-    top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
-
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    context = retrieve_basic_info(request)
 
     template = loader.get_template('about.html')
 
@@ -93,24 +64,7 @@ def about_page(request):
 
 @login_required
 def profile_page(request):
-    context = {}
-
-    if 'message' in request.session:
-        context['message'] = request.session['message']
-        del request.session['message']
-
-    if request.user.is_authenticated():
-        context['user'] = request.user
-
-    top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
-
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    context = retrieve_basic_info(request)
 
     context['user_bids'] = Bid.get_placed_bids(request.user.username)
     context['user_selling'] = Product.get_user_products(request.user.username)
@@ -120,23 +74,7 @@ def profile_page(request):
 
 
 def category_page(request):
-    context = {}
-    if 'message' in request.session:
-        context['message'] = request.session['message']
-        del request.session['message']
-
-    if request.user.is_authenticated():
-        context['user'] = request.user
-
-    top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
-
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    context = retrieve_basic_info(request)
 
     category_id = unquote(request.get_full_path().split('/', 2)[2])
 
@@ -150,8 +88,8 @@ def category_page(request):
     children = category_object.get_children_category()
     children_categories = {}
     for c in children:
-        cat_name = c.category_name
-        children_categories[cat_name] = c.get_category_product()
+        cat_id = c.id
+        children_categories[cat_id] = c.get_category_product()
     context['children_categories'] = children_categories
 
     template = loader.get_template('category.html')
@@ -160,23 +98,7 @@ def category_page(request):
 
 
 def product_page(request):
-    context = {}
-    if 'message' in request.session:
-        context['message'] = request.session['message']
-        del request.session['message']
-
-    if request.user.is_authenticated():
-        context['user'] = request.user
-
-    top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
-
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    context = retrieve_basic_info(request)
 
     product_id = unquote(request.get_full_path().split('/', 2)[2])
     product = Product.objects.get(id=product_id)
@@ -204,7 +126,7 @@ def product_page(request):
     past_sales = Product.get_expired_user_products(product.seller)
     context['past_sales'] = past_sales
 
-    same_category_products = category.get_category_product()
+    same_category_products = category.get_category_product().exclude(id=product.id)
     context['same_category_products'] = same_category_products
 
     template = loader.get_template('product.html')

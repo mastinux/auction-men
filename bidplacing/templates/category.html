@@ -11,78 +11,97 @@
     <!-- div to have left categories bar-->
 
     <div class="col-sm-9">
-
+    {% if category_products %}
         <h1>Category products for {{ category }}</h1>
         <div class="row">
         {% for product in category_products %}
           <div class="col-sm-6 col-md-4">
             <div class="thumbnail">
+
               <img src="..." alt="product_image">
+
               <div class="caption">
                 <h3>{{ product.product_name }}</h3>
-                <p>Current price :  {% if product.get_best_bid == None %}
-                                        {{ product.start_price }}
-                                    {% else %}
-                                         {{ product.get_best_bid }}
-                                    {% endif %}</p>
-                <p>Deadline time : {{ product.deadline_time }}</p>
-<!-- asdfasdfasdfasfas -->
-                <div class="row">
-                    <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                          <a href="/product/{{ product.id }}" class="btn btn-primary" role="button">View Details</a>
+                <p>Max bid placed : {{ product.get_best_bid }}</p>
+                <p>Remaining time : {{ product.get_remaining_time }}</p>
+
+                  <div class="row">
+                      <div class="container-fluid">
+                          <a href="/product/{{ product.id }}" class="btn btn-primary" role="button">
+                              View Details</a>
                       </div>
-                    <br><br>
-                    {% if user.is_authenticated %}
-                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                <input type="text" class="form-control" placeholder="Amount" style="max-width: 150px;">
-                          </div>
-                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                              <button type="submit" class="btn btn-default" style="margin: 0 auto;">Bid now!</button>
-                          </div>
-                      {% endif %}
                   </div>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-        </div>
-
-        <h1>Children categories</h1>
-        {% for children_category_name,children_category_products in children_categories.iteritems %}
-        <h3>Category products for {{ children_category_name }}</h3>
-        <div class="row">
-        {% for product in children_category_products %}
-          <div class="col-sm-6 col-md-4">
-            <div class="thumbnail">
-              <img src="..." alt="product_image">
-              <div class="caption">
-                <h3>{{ product.product_name }}</h3>
-                <p>Current price :  {% if product.get_best_bid == None %}
-                                        {{ product.start_price }}
-                                    {% else %}
-                                         {{ product.get_best_bid }}
-                                    {% endif %}</p>
-                <p>Deadline time : {{ product.deadline_time }}</p>
-
-                <div class="row">
-                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                          <a href="/product/{{ product.id }}" class="btn btn-primary" role="button">View Details</a>
-                      </div>
+                  <div class="row">
                       {% if user.is_authenticated %}
-                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                                <input type="text" class="form-control" placeholder="Amount" style="max-width: 150px;">
-                          </div>
-                          <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                              <button type="submit" class="btn btn-default" style="margin: 0 auto;">Bid now!</button>
+                          <div class="row">
+
+                              <div class="col-lg-8">
+                                    <input type="number" class="form-control" placeholder="Amount" style="max-width: 150px;"
+                                           step="0.01" value="{{ product.get_best_bid }}" min="{{ product.get_best_bid }}">
+                              </div>
+                              <div class="col-lg-4" >
+                                  <button type="submit" class="btn btn-default label-info" style="margin: 0 auto;">Bid!</button>
+                              </div>
                           </div>
                       {% endif %}
                   </div>
+
               </div>
             </div>
-          </div>
+           </div>
         {% endfor %}
         </div>
-    {% endfor %}
+    {% else %}
+        <h1>Sorry, no products for this category</h1>
+    {% endif %}
 
+    {% if children_category_products.lenght != 0 %}
+        <h1>Children categories</h1>
+        {% for cat_id,children_category_products in children_categories.iteritems %}
+            {% if children_category_products %}
+                <h3>Category products for <a href="/category/{{ cat_id }}">
+                    {{ children_category_products.first.category.category_name }}</a></h3>
+                <div class="row">
+                {% for product in children_category_products %}
+                  <div class="col-sm-6 col-md-4">
+                    <div class="thumbnail">
+
+                      <img src="..." alt="product_image">
+
+                      <div class="caption">
+                        <h3>{{ product.product_name }}</h3>
+                        <p>Max bid placed : {{ product.get_best_bid }}</p>
+                        <p>Remaining time : {{ product.get_remaining_time }}</p>
+
+                          <div class="row">
+                              <div class="container-fluid">
+                                  <a href="/product/{{ product.id }}" class="btn btn-primary" role="button">
+                                      View Details</a>
+                              </div>
+                          </div>
+                          <div class="row">
+                              {% if user.is_authenticated %}
+                                  <div class="row">
+
+                                      <div class="col-lg-8">
+                                            <input type="number" class="form-control" placeholder="Amount" style="max-width: 150px;"
+                                                   step="0.01" value="{{ product.get_best_bid }}" min="{{ product.get_best_bid }}">
+                                      </div>
+                                      <div class="col-lg-4" >
+                                          <button type="submit" class="btn btn-default label-info" style="margin: 0 auto;">Bid!</button>
+                                      </div>
+                                  </div>
+
+                              {% endif %}
+                          </div>
+
+                      </div>
+                    </div>
+                   </div>
+                {% endfor %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
     </div>
 {% endblock %}

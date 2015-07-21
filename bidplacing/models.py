@@ -55,7 +55,7 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
     def get_remaining_time(self):
-        return str(timedelta(seconds=(self.deadline_time - timezone.now()).seconds))
+        return self.deadline_time - timezone.now()
 
     @staticmethod
     def get_user_products(user):

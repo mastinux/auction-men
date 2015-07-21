@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import Max
-from datetime import timedelta
+from datetime import timedelta, datetime
 
 
 # category data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn

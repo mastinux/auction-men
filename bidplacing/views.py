@@ -16,6 +16,7 @@ def main_page(request):
     if request.user.is_authenticated():
         context['user'] = request.user
 
+# porca madompa
 # TODO : avoid redundancy for next 3 rows in all methods views
     top_categories = Category.get_top_categories()
     top_category_list = {}

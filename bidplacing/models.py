@@ -26,7 +26,10 @@ class Category(models.Model):
             return False
 
     def get_children_category(self):
-        return Category.objects.filter(parent=self.category_name, level=self.level+1)
+        return Category.objects.filter(parent=self.id, level=self.level+1)
+
+    def get_category_product(self):
+        return Product.objects.filter(category_id=self.id, deadline_time__gt=timezone.now())
 
 
 class Product(models.Model):
@@ -50,6 +53,9 @@ class Product(models.Model):
         if self.start_price < 0:
             raise ValueError("Start_price could not be negative")
         super(Product, self).save(*args, **kwargs)
+
+    def get_remaining_time(self):
+        return str(timedelta(seconds=(self.deadline_time - timezone.now()).seconds))
 
     @staticmethod
     def get_user_products(user):
@@ -89,10 +95,11 @@ class Product(models.Model):
     def get_last_inserts_coming(m=0, h=0, d=0):
         return Product.get_last_inserts(m, h, d).filter(deadline_time__gt=timezone.now())
 
-    @staticmethod
-    def get_category_products(category_name):
-        category = Category.objects.get(category_name=category_name)
-        return Product.objects.filter(category__exact=category)
+# TODO : delete because implemented by Bid.get_category_product
+#    @staticmethod
+#    def get_category_products(category_name):
+#        category = Category.objects.get(category_name=category_name)
+#        return Product.objects.filter(category__exact=category)
 
     def get_past_bids(self):
         return Bid.objects.filter(product_name=self.id).order_by('bidding_time')

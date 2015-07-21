@@ -8,10 +8,13 @@
     {% endif %}
 
     <div>
-        <br>
+        <!-- div to have left categories bar-->
+        <div class="col-sm-9">
         {% if user.is_authenticated %}
         <!-- expiring and recommended products-->
             <h1>Expiring auctions</h1>
+
+
             <div class="row">
             {% for expiring_auction in expiring_auctions %}
               <div class="col-sm-6 col-md-4">
@@ -23,7 +26,7 @@
                     <p>Deadline time : {{ expiring_auction.deadline_time }}</p>
                       <div class="row">
                           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                              <a href="/product/{{ expiring_auction.product_name }}" class="btn btn-primary" role="button">View Details</a>
+                              <a href="/product/{{ expiring_auction.id }}" class="btn btn-primary" role="button">View Details</a>
                           </div>
                           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                                 <input type="text" class="form-control" placeholder="Amount" style="max-width: 150px;">
@@ -37,7 +40,9 @@
               </div>
             {% endfor %}
             </div>
-            <!-- add here recommended products -->
+
+
+        <!-- add here recommended products -->
         {% endif %}
         <!-- last insertions for all client -->
             <h1>Last insertions</h1>
@@ -57,7 +62,7 @@
 
                     <div class="row">
                           <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
-                              <a href="/product/{{ last_insertion.product_name }}" class="btn btn-primary" role="button">View Details</a>
+                              <a href="/product/{{ last_insertion.id }}" class="btn btn-primary" role="button">View Details</a>
                           </div>
                           {% if user.is_authenticated %}
                               <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
@@ -73,5 +78,7 @@
               </div>
             {% endfor %}
             </div>
+    </div>
+
     </div>
 {% endblock %}

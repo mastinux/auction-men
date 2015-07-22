@@ -19,5 +19,6 @@ urlpatterns = [
     ###
     url(r'^category/', 'bidplacing.views.category_page', name='category_page'),
     url(r'^product/', 'bidplacing.views.product_page', name='product_page'),
-    url(r'^place-bid/', 'bidplacing.views.place_bid', name='place_bid')
+    url(r'^place-bid/', 'bidplacing.views.place_bid', name='place_bid'),
+    url(r'^search/', 'bidplacing.views.search_page', name='search_page')
 ]

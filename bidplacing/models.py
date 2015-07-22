@@ -108,8 +108,10 @@ class Product(models.Model):
         product = Product.objects.get(product_name=self.product_name,
                                       deadline_time=self.deadline_time, seller=self.seller)
         max_bid = product.bid_set.all().aggregate(Max('amount'))
-        # it doesn't matter whose is the best bid because we call the method on a product object
-        return max_bid.get('amount__max')
+        if max_bid.get('amount__max') is None:
+            return self.start_price
+        else:
+            return max_bid.get('amount__max')
 
 
 class Bid(models.Model):

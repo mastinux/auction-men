@@ -142,3 +142,28 @@ def place_bid(request):
     template = loader.get_template('product.html')
 
     return HttpResponse(template.render(context))
+
+
+def search_page(request):
+    context = retrieve_basic_info(request)
+
+    searched_value = request.REQUEST.get('searched_value')
+
+    if searched_value:
+        context['searched_value'] = searched_value
+
+        categories_found = Category.objects.filter(category_name__icontains=searched_value)
+        context['categories_found'] = categories_found
+
+        category_products_found = {}
+        for category_found in categories_found:
+            category_products = category_found.get_category_product()
+            category_products_found[category_found.id] = category_products
+        context['category_products_found'] = category_products_found
+
+        products_found = Product.objects.filter(product_name__icontains=searched_value)
+        context['products_found'] = products_found
+
+    template = loader.get_template('search.html')
+
+    return HttpResponse(template.render(context))

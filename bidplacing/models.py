@@ -63,7 +63,7 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
     def get_remaining_time(self):
-        return self.deadline_time - timezone.now()
+        return (self.deadline_time - timezone.now()).__str__().split(',')[0]
 
     @staticmethod
     def get_user_products(user):

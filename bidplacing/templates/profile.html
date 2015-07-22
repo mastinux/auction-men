@@ -94,7 +94,7 @@
                           <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
                           <td>{{ bid.product_name.best_bid }}</td>
-                          <td>&nbsp</td>
+                          <td>{{ bid.product_name.get_remaining_time }} </td>
                         </tr>
                     {% endfor %}
                   </tbody>
@@ -164,7 +164,7 @@
                           <td>{{ item.start_price }}</td>
                           <td>{{ item.insertion_time }}</td>
                           <td>{{ item.deadline_time }}</td>
-                          <td>&nbsp</td>
+                          <td>{{ item.get_remaining_time}} </td>
                         </tr>
                     {% endfor %}
 

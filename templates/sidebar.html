@@ -1,0 +1,33 @@
+{% block sidebar %}
+<!-- category selection bar-->
+    <div class="row-fluid">
+        <div class="col-sm-3"><!--left col-->
+            <!--<div class="btn-group btn-group-justified" role="group" aria-label="...">-->
+            <div class="btn-group-vertical" role="group" aria-label="...">
+
+                {% for parent_id, top_category_name in top_categories.iteritems %}
+
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
+                            <a href="/category/{{ parent_id }}">{{ top_category_name }}</a>
+                            <span class="caret"></span>
+                        </button>
+
+                        {% for f_id, children in category_children_list.iteritems %}
+                            {% if f_id == parent_id %}
+                                <ul class="dropdown-menu">
+                                    {% for child in children %}
+                                            <li><a href="/category/{{ child.id }}">{{ child.category_name }}</a></li>
+                                    {% endfor %}
+                                    </ul>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

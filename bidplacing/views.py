@@ -1,10 +1,12 @@
 from django.contrib.auth.decorators import login_required
-from django.template import loader
+from django.forms import Form
+from django.http.response import HttpResponseRedirect
+from django.template import loader, RequestContext
 from django.http import HttpResponse
-from bidplacing.models import *
+from models import *
+from forms import BidForm, ProductForm
 from urllib import unquote
-# Create your views here.
-
+from django.contrib.auth.models import User, AbstractUser# Create your views here.
 
 def retrieve_basic_info(request):
     context = {}
@@ -69,6 +71,8 @@ def profile_page(request):
     context['user_bids'] = Bid.get_placed_bids(request.user.username)
     context['user_selling'] = Product.get_user_products(request.user.username)
     template = loader.get_template('profile.html')
+
+    context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
 
@@ -165,5 +169,41 @@ def search_page(request):
         context['products_found'] = products_found
 
     template = loader.get_template('search.html')
+
+    return HttpResponse(template.render(context))
+
+
+@login_required
+def update_profile(request):
+    if request.method == 'POST':
+        user = User.objects.get(username=request.user.username)
+        user.first_name = request.POST['first_name'] or user.first_name
+        user.last_name = request.POST['last_name'] or user.last_name
+        user.save()
+        request.user = user
+    template = loader.get_template('profile.html')
+    context = retrieve_basic_info(request)
+    context = RequestContext(request, context)
+
+    return HttpResponseRedirect('/accounts/profile')
+
+
+@login_required
+def new_product(request):
+    form = ProductForm(request.POST or None)
+
+    if form.is_valid():
+        print form
+        product = form.save(commit=False)
+        product.seller = request.user
+
+        product.save()
+
+        request.session['message'] = 'Product succesfully added'
+        return HttpResponseRedirect('/')
+    template = loader.get_template('new_product.html')
+    context = retrieve_basic_info(request)
+    context['form'] = form
+    context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))

@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import Max
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, time
 
 
 # category data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
@@ -56,6 +56,10 @@ class Product(models.Model):
             raise ValueError("Deadline_time could not be before now")
         if self.start_price < 0:
             raise ValueError("Start_price could not be negative")
+        hour = datetime.today().hour
+        m = datetime.today().minute
+        self.deadline_time = datetime.combine(
+            self.deadline_time, time(hour, m))
         super(Product, self).save(*args, **kwargs)
 
     def get_remaining_time(self):

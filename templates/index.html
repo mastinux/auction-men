@@ -2,13 +2,15 @@
 
 {% block info %}
     {% if message %}
-        <div class="alert alert-success">
-           {{ message }}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                {{ message }}
         </div>
     {% endif %}
 
     <div>
         <!-- div to have left categories bar-->
+     {% include 'sidebar.html' %}
         <div class="col-sm-9">
         {% if user.is_authenticated %}
         <!-- expiring products for logged users -->

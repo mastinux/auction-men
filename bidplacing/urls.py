@@ -1,6 +1,7 @@
 __author__ = 'mastinux'
+
 from django.conf.urls import url
-from . import views
+import views
 
 urlpatterns = [
     url(r'^$', views.main_page, name='user'),

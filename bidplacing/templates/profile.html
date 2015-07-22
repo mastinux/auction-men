@@ -7,7 +7,7 @@
            {{ message }}
         </div>
     {% endif %}
-{{ user_selling }}
+
     <div>
         <br>
         {% if user.is_authenticated %}
@@ -15,9 +15,6 @@
             Hello, to see more contents please sign up!
         {% endif %}
     </div>
-
-    <!-- div to have left categories bar-->
-    <div class="col-sm-9">
 
 	<div class="row">
   		<div class="col-sm-10"><h1>{{ user.username | capfirst }}'s profile page</h1></div>
@@ -49,8 +46,8 @@
 
           <ul class="list-group">
             <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">25</span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">42</span>&nbsp</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">{{ user_selling | length }}</span>&nbsp</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">{{ user_bids | length }}</span>&nbsp</li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">84</span>&nbsp</li>
           </ul>
 
@@ -87,33 +84,18 @@
                     </tr>
                   </thead>
                   <tbody id="items">
-                    <tr class="success">
-                      <td>1</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr class="danger">
-                      <td>2</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
-                    <tr>
-                      <td>3</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                      <td>Table cell</td>
-                    </tr>
+
+                  {% for bid in user_bids %}
+                         <tr>
+                          <td>1</td>
+                          <td>{{ bid.product_name.product_name }}</td>
+                          <td>{{ bid.product_name.seller }}</td>
+                          <td>{{ bid.product_name.start_price }}</td>
+                          <td>{{ bid.amount }}</td>
+                          <td>{{ bid.product_name.best_bid }}</td>
+                          <td>&nbsp</td>
+                        </tr>
+                    {% endfor %}
                   </tbody>
                 </table>
                 <hr>
@@ -177,7 +159,7 @@
                          <tr>
                           <td>1</td>
                           <td>{{ item.product_name }}</td>
-                          <td>{{ item.description }}l</td>
+                          <td>{{ item.description }}</td>
                           <td>{{ item.start_price }}</td>
                           <td>{{ item.insertion_time }}</td>
                           <td>{{ item.deadline_time }}</td>
@@ -293,5 +275,4 @@
 
         </div><!--/col-9-->
     </div><!--/row-->
-    </div>
 {% endblock %}

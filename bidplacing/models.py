@@ -42,6 +42,10 @@ class Product(models.Model):
     seller = models.ForeignKey(User)
     category = models.ForeignKey(Category)
 
+    @property
+    def best_bid(self):
+        return self.get_best_bid()
+
     def __unicode__(self):
         string = "%s [start_price=%s deadline=%s seller=%s]" % \
                  (self.product_name, self.start_price, self.deadline_time, self.seller)

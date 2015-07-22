@@ -1,0 +1,77 @@
+
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (0, 'Musica Digitale', 0, 0);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (1, 'Amazon Cloud Drive', 0, 1);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (2, 'E-reader e eBook Kindle', 0, 2);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (3, 'Tablet Fire', 0, 3);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (4, 'App-Shop per Android', 0, 4);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (5, 'Libri', 0, 5);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (6, 'Musica, Film e TV', 0, 6);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (7, 'Videogiochi e Console', 0, 7);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (8, 'Elettronica e Informatica', 0, 8);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (9, 'Casa, Giardino e Fai da te', 0, 9);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (10, 'Bellezza e Cura della persona', 0, 10);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (11, 'Giochi e Prima infanzia
+', 0, 11);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (12, 'Moda', 0, 12);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (13, 'Sport e tempo libero', 0, 13);
+           
+          INSERT INTO auctions_db.bidplacing_category
+            (id, category_name, level, parent_id)
+          VALUES
+            (14, 'Auto e Moto', 0, 14);
+            

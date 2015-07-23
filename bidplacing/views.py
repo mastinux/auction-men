@@ -154,8 +154,7 @@ def place_bid(request, product_id):
         else:
             request.session['message'] = 'You are the best bidder!!'
             bid.save()
-
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 def search_page(request):
     context = retrieve_basic_info(request)

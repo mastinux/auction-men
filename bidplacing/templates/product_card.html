@@ -1,7 +1,7 @@
 <div class="col-md-3">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h6><a class="pull-right" href="">{{ product.category.category_name }}</a></h6>
+            <h6><a class="pull-right" href="{% url 'bidplacing:show_category' product.category.id %}">{{ product.category.category_name }}</a></h6>
             <h4><a href="{% url 'bidplacing:show_product' product.id %}">{{ product.product_name }}</a></h4>
         </div>
         <div class="panel-body">

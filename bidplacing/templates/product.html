@@ -2,12 +2,24 @@
 {% load tz %}
 
 {% block info %}
-
     {% if message %}
-        <div class="alert alert-success">
-           {{ message }}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                {{ message }}
         </div>
     {% endif %}
+{% endblock %}
+
+{% block error %}
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                {{ error }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
 
     <!-- div to have left categories bar-->
     <div class="col-md-12">

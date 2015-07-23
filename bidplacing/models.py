@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
-from django.db.models import Max
+from django.db.models import Max, Min, Count, F
 from datetime import timedelta, datetime, time
 
 
@@ -83,6 +83,24 @@ class Product(models.Model):
     def get_coming_user_products(user):
         user_tmp = User.objects.get(username=user)
         return Product.objects.filter(seller=user_tmp).exclude(deadline_time__lt=timezone.now())
+
+    @staticmethod
+    def get_purchased_products(user):
+        user_tmp = User.objects.get(username=user)
+
+        product_id_list = Bid.objects.values('product_name__id').distinct()
+
+        purchased_products = []
+        for product_id in product_id_list:
+            p_id = product_id.get('product_name__id')
+
+            max_bid = Bid.objects.filter(product_name=p_id).order_by('-bidding_time')[0]
+            if max_bid.bidder == user_tmp:
+                purchased_products.append(max_bid)
+
+        return purchased_products
+
+
 
     @staticmethod
     def get_ranged_products(start, end):

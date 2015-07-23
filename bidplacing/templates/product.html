@@ -13,15 +13,16 @@
     <div class="col-md-12">
 
     	<div class="row">
-  		    <div class="col-sm-10"><h1>{{ product.product_name }}</h1></div>
-  		    <div class="col-sm-10"><h3>Category: <a href="/category/{{ category.id }}">{{ category.category_name }}</a></h3></div>
+  		    <div class="col-sm-10"><h1>{{ product.product_name | capfirst }}</h1></div>
+  		    <div class="col-sm-10"><h3>Category: <a href="{% url 'bidplacing:show_category' category.id %}">{{ category.category_name }}</a></h3></div>
         </div>
         <hr>
-        <div class="row-fluid">
+        <div class="row">
 
             <div class="col-md-12">
 
                 <div class="col-md-4">
+                    <h4>Seller : {{ product.seller | capfirst}}</h4>
                     <h4>Current price:
                         {% if product.get_best_bid == None %}
                             {{ product.start_price }}

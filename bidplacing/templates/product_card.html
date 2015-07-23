@@ -8,8 +8,11 @@
             <img src="//placehold.it/150x150" class="img-circle pull-right">
             <div class="clearfix"></div>
             <hr>
-
-            <p>{{ product.description }}</p>
+            {% if product.description %}
+                <p>{{ product.description }}</p>
+            {% else %}
+                <p>&nbsp</p>
+            {% endif %}
             <hr>
             <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
                 {% csrf_token %}

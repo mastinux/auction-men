@@ -88,10 +88,9 @@
 
                   {% for bid in user_bids %}
                          <tr>
-                          <td>1</td>
-                          <td>{{ bid.product_name.product_name }}</td>
+                          <td>{{ forloop.counter }}</td>
+                          <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000"> {{ bid.product_name.product_name }}</a></td>
                           <td>{{ bid.product_name.seller }}</td>
-                          <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
                           <td>{{ bid.product_name.best_bid }}</td>
                           <td>{{ bid.product_name.get_remaining_time }} </td>

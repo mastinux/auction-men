@@ -87,27 +87,21 @@ def profile_page(request):
 
 def category_page(request, cat_id):
     context = retrieve_basic_info(request)
-    category_id = cat_id.split('/')[0]
-    #if cat_id:
-    #category_id = unquote(request.get_full_path().split('/')[3])
-    #else:
-    #    category_id = cat_id
-
+    category_id = cat_id
     category_object = Category.objects.get(id=category_id)
-
-    context['category'] = category_object.category_name
-
     category_products = category_object.get_category_product()
-    context['category_products'] = category_products
-
     children = category_object.get_children_category()
     children_categories = {}
+    context['category_products'] = category_products
+    context['category'] = category_object
+
     for c in children:
         cat_id = c.id
         children_categories[cat_id] = c.get_category_product()
     context['children_categories'] = children_categories
 
     template = loader.get_template('category.html')
+    context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
 

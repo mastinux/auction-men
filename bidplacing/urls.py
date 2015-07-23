@@ -12,6 +12,10 @@ urlpatterns = [
 
     url(r'^update-profile', views.update_profile, name='update_profile'),
 
+    #url(r'^product/', 'bidplacing.views.product_page', name='product_page'),
+    #url(r'^place-bid/', 'bidplacing.views.place_bid', name='place_bid'),
+    url(r'^search/', 'bidplacing.views.search_page', name='search_page'),
+
     url(r'^category/(?P<cat_id>[0-9]+/)',
         views.category_page,
         name='show_category'

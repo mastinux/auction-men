@@ -50,7 +50,7 @@ def main_page(request):
     context['suggested_products'] = suggested_products
     context['form'] = BidForm()
 
-    template = loader.get_template('index2.html')
+    template = loader.get_template('index.html')
 
     context = RequestContext(request, context)
 
@@ -145,7 +145,7 @@ def product_page(request):
     context['same_category_products'] = same_category_products
 
     template = loader.get_template('product.html')
-
+    context = RequestContext(request, context)
     return HttpResponse(template.render(context))
 
 @login_required
@@ -223,6 +223,32 @@ def new_product(request):
     return HttpResponse(template.render(context))
 
 def show_product(request, product_id):
-    print request, product_id
+    context = retrieve_basic_info(request)
 
-    return HttpResponseRedirect('/product/%s'%product_id)
+    product = Product.objects.get(id=product_id)
+    category = Category.objects.get(id=product.category_id)
+    seller = User.objects.get(username=product.seller)
+    context['product'] = product
+    context['category'] = product.category
+
+
+    context['seller'] = product.seller
+
+    seller_bids = Bid.objects.filter(bidder=seller.id).__len__()
+    context['seller_bids'] = seller_bids
+    # TODO : develop purchased products
+    seller_purchases = 0
+    context['seller_purchases'] = seller_purchases
+
+    past_bids = product.get_past_bids()
+    context['past_bids'] = past_bids
+
+    past_sales = Product.get_expired_user_products(product.seller)
+    context['past_sales'] = past_sales
+
+    same_category_products = category.get_category_product().exclude(id=product.id)
+    context['same_category_products'] = same_category_products
+
+    template = loader.get_template('product.html')
+    context = RequestContext(request, context)
+    return HttpResponse(template.render(context))

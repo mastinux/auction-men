@@ -10,209 +10,69 @@
     {% endif %}
 
     <!-- div to have left categories bar-->
-    <div class="col-sm-9">
+    <div class="col-md-12">
 
     	<div class="row">
-  		<div class="col-sm-10"><h1>{{ product.product_name }}</h1></div>
-  		<div class="col-sm-10"><h3>Category: <a href="/category/{{ category.id }}">{{ category.category_name }}</a></h3></div>
+  		    <div class="col-sm-10"><h1>{{ product.product_name }}</h1></div>
+  		    <div class="col-sm-10"><h3>Category: <a href="/category/{{ category.id }}">{{ category.category_name }}</a></h3></div>
         </div>
         <hr>
         <div class="row-fluid">
-  		<div class="col-sm-3"><!--left col-->
 
-          <ul class="list-group">
-            <li class="list-group-item text-muted">Seller's Profile</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Username</strong></span>{{ seller.username }}</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Joined</strong></span>{{ seller.date_joined | date:"M d, Y" }}</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Last seen</strong></span> {{ seller.last_login | date:"M d, Y" }}</li>
-          </ul>
+            <div class="col-md-12">
 
-          <ul class="list-group">
-            <li class="list-group-item text-muted">Seller's Activities<i class="fa fa-dashboard fa-1x"></i></li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">
-                {{ seller_products }}
-            </span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">
-                {{ seller_bids }}
-            </span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">
-                {{ seller_purchases }}
-            </span>&nbsp</li>
-          </ul>
-
-          <div class="panel panel-default">
-            <div class="panel-heading">Social Media</div>
-            <div class="panel-body">
-            	<i class="fa fa-facebook fa-2x"></i> <i class="fa fa-github fa-2x"></i> <i class="fa fa-twitter fa-2x"></i> <i class="fa fa-pinterest fa-2x"></i> <i class="fa fa-google-plus fa-2x"></i>
-            </div>
-          </div>
-
-        </div><!--/col-3-->
-
-    	<div class="col-sm-9">
-
-          <ul class="nav nav-tabs" id="myTab">
-            <li class="active"><a href="#current" data-toggle="tab">Current state</a></li>
-            <li><a href="#bids" data-toggle="tab">Past bids</a></li>
-          </ul>
-
-          <div class="tab-content">
-            <div class="tab-pane active" id="current">
-              <div class="table">
-
-                <table class="table table-hover table-bordered">
-                  <thead>
-                    <tr>
-                        <br>
-                        <h4>Current price: {% if product.get_best_bid == None %}
-                                            {{ product.start_price }}
-                                        {% else %}
-                                             {{ product.get_best_bid }}
-                                        {% endif %}</h4>
-                        <h4>Insertion time : {{ product.insertion_time }}</h4>
-                        <h4>Deadline time : {{ product.deadline_time }}</h4>
-                        <h4>Remaining time : {{ product.get_remaining_time }}</h4>
-                    </tr>
-                  </thead>
-                </table>
-
-                <hr>
-
-                <table class="table table-hover table-bordered">
-                  <thead>
-                    <tr>
-                        <br>
-                        <div class="table">
-                          {% if user.is_authenticated %}
-                              <div class="row">
-
-                                  <div class="col-lg-8">
-                                        <input type="number" class="form-control" placeholder="Amount" style="max-width: 150px;"
-                                               step="0.01" value="{{ product.get_best_bid }}" min="{{ product.get_best_bid }}">
-                                  </div>
-                                  <div class="col-lg-4" >
-                                      <button type="submit" class="btn btn-default label-info" style="margin: 0 auto;">Bid!</button>
-                                  </div>
-                              </div>
-
-                          {% else %}
-                              <div>
-                                  <h4>Please sign in to bid for this product</h4>
-                              </div>
-                          {% endif %}
-                      </div>
-                    </tr>
-                  </thead>
-                </table>
-
-                <hr>
-
-                <div class="table">
-                    <table class="table table-hover table-bordered">
-                      <thead>
-                        <tr>
-                            <h1>recommended products</h1>
-                        </tr>
-                      </thead>
-                    </table>
-                </div>
-
-                <hr>
-              {% if same_category_products %}
-                <div class="table">
-                    <table class="table table-hover table-bordered">
-                      <thead>
-                        <tr>
-                          <h1>Same category products</h1>
-                            <div class="row">
-                            {% for product in same_category_products %}
-                              <div class="col-sm-5">
-                                <div class="thumbnail">
-
-                                  <img src="..." alt="product_image">
-
-                                  <div class="caption">
-                                    <h3>{{ product.product_name }}</h3>
-                                    <p>Max bid placed : {{ product.get_best_bid }}</p>
-                                    <p>Remaining time : {{ product.get_remaining_time }}</p>
-
-                                      <div class="row">
-                                          <div class="container-fluid">
-                                              <a href="/product/{{ product.id }}" class="btn btn-primary" role="button">
-                                                  View Details</a>
-                                          </div>
-                                      </div>
-                                        <div class="row">
-                                          {% if user.is_authenticated %}
-                                              <div class="row">
-
-                                                  <div class="col-lg-8">
-                                                        <input type="number" class="form-control" placeholder="Amount" style="max-width: 150px;"
-                                                               step="0.01" value="{{ product.get_best_bid }}" min="{{ product.get_best_bid }}">
-                                                  </div>
-                                                  <div class="col-lg-4" >
-                                                      <button type="submit" class="btn btn-default label-info" style="margin: 0 auto;">Bid!</button>
-                                                  </div>
-                                              </div>
-
-                                          {% endif %}
-                                        </div>
-                                  </div>
+                <div class="col-md-4">
+                    <h4>Current price:
+                        {% if product.get_best_bid == None %}
+                            {{ product.start_price }}
+                        {% else %}
+                            {{ product.get_best_bid }}
+                        {% endif %}
+                    </h4>
+                    <h4>Insertion time : {{ product.insertion_time }}</h4>
+                    <h4>Deadline time : {{ product.deadline_time }}</h4>
+                    <h4>Remaining time : {{ product.get_remaining_time }}</h4>
+                    <hr>
+                    <div class="row ">
+                        <div class="col-md-5">
+                            <img src="//placehold.it/150x150" class="img">
+                        </div>
+                        <div class="col-md-7">
+                             <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
+                                {% csrf_token %}
+                                <div class="input-group pull-right">
+                                    <input type="number" class="form-control" placeholder="Amount"
+                                           step="0.01" value="{{ product.get_best_bid }}"
+                                           min="{{ product.get_best_bid }}" name="amount">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit">bid!</button>
+                                    </div>
                                 </div>
-                              </div>
-                            {% endfor %}
-                            </div>
-                        </tr>
-                      </thead>
-                    </table>
-                </div>
-              {% endif %}
+                            </form>
+                        </div>
 
-              </div><!--/table-resp-->
-
-              <hr>
-
-             </div><!--/tab-pane-->
-
-            <div class="tab-pane" id="bids">
-                <div class="table">
-                <table class="table table-hover table-bordered">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Bidder</th>
-                      <th>Bidding time</th>
-                      <th>Amount</th>
-                    </tr>
-                  </thead>
-                  <tbody id="items">
-
-                    {% for item in past_bids %}
-                         <tr>
-                          <td>{{ forloop.counter }}</td>
-                          <td>{{ item.bidder.username }}</td>
-                          <td>{{ item.bidding_time }}</td>
-                          <td>{{ item.amount }}</td>
-                        </tr>
-                    {% endfor %}
-
-                  </tbody>
-                </table>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-4 text-center">
-                      <ul class="pagination" id="myPager">
-                        </ul>
                     </div>
+
+
                 </div>
-              </div><!--/table-resp-->
+                <div class="col-md-8">
+                    {% include 'product_bids_history.html' with product_bids=past_bids %}
+                </div>
+
             </div>
+        </div><!--/col-row-->
 
-          </div><!--/tab-content-->
+        <div class="row">
+            <hr>
+            {% if same_category_products %}
+              <h1>Related product</h1>
+              <hr>
+              {% for item in same_category_products %}
+                 {% include 'product_card.html' with product=item %}
+              {% endfor %}
+            {% endif %}
+        </div>
 
-        </div><!--/col-9-->
-    </div><!--/row-->
-
-    </div>
+    </div><!--/col-md-12-->
 
 {% endblock %}

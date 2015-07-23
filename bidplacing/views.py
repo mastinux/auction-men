@@ -158,10 +158,9 @@ def place_bid(request, product_id):
 
 def search_page(request):
     context = retrieve_basic_info(request)
+    searched_value = request.GET['searched_value']
 
-    searched_value = request.REQUEST.get('searched_value')
-
-    if searched_value:
+    if len(searched_value) > 2:
         context['searched_value'] = searched_value
 
         categories_found = Category.objects.filter(category_name__icontains=searched_value)

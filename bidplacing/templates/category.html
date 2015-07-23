@@ -24,23 +24,27 @@
     {% if category_products %}
         <h1>{{ category.category_name | capfirst}}</h1>
         <hr>
-        <hr>
         <div class="row">
         {% for item in category_products %}
             {% include 'product_card.html' with product=item %}
         {% endfor %}
         </div>
     {% else %}
-        <h1>Sorry, no products for this category</h1>
+         <div class="alert alert-warning alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                Sorry, no products for this category
+        </div>
     {% endif %}
 
-    {% if children_category_products.lenght != 0 %}
-        <h1>Children categories</h1>
+    {% if children_categories %}
+        <h1>Related categories</h1>
         <hr>
         {% for cat_id,children_category_products in children_categories.iteritems %}
             {% if children_category_products %}
                 <h3>Category products for <a href="{% url 'bidplacing:show_category' cat_id %}">
-                    {{ children_category_products.first.category.category_name }}</a></h3>
+                    {{ children_category_products.first.category.category_name }}</a>
+                </h3>
+                <hr>
                 <div class="row">
                 {% for item in children_category_products %}
                     {% include 'product_card.html' with product=item %}

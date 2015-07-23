@@ -19,8 +19,8 @@
               <!-- class="active" (add to specific page requested)-->
             <li><a href="#">Product sold</a></li>
             <li><a href="#">Top bids</a></li>
-            <li><a href="/bidplacing/about">About</a></li>
-            <li><a href="/bidplacing/contact">Contact</a></li>
+            <li><a href="{% url 'bidplacing:about_page' %}">About</a></li>
+            <li><a href="{% url 'bidplacing:contact_page' %}">Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
 
@@ -29,14 +29,14 @@
                       Products by <strong>Category</strong><span class="caret"></span></a>
                   <ul class="dropdown-menu">
                     {% for category in top_categories %}
-                        <li><a href="/bidplacing/category/{{ category.id }}">{{ category.category_name }}</a></li>
+                        <li><a href="{% url 'bidplacing:show_category' category.id %}">{{ category.category_name }}</a></li>
                     {% endfor %}
 
                   </ul>
               </li>
 
 
-              <form class="navbar-form navbar-left" role="search" action="/search/">
+              <form class="navbar-form navbar-left" role="search" action="{% url 'bidplacing:search_page' %}">
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Products and more" name="searched_value">
                 </div>

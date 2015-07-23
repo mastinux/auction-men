@@ -157,9 +157,10 @@
                   <tbody id="items">
 
                     {% for item in user_selling %}
-                         <tr>
+
+                        <tr>
                           <td>1</td>
-                          <td>{{ item.product_name }}</td>
+                          <td><a href="{% url 'bidplacing:show_product' item.id %}">{{ item.product_name }}</a></td>
                           <td>{{ item.description }}</td>
                           <td>{{ item.start_price }}</td>
                           <td>{{ item.insertion_time }}</td>

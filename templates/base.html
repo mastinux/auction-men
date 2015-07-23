@@ -19,12 +19,16 @@
 
     <body>
         {% include 'navbar.html' %}
-        <div class="container">
+        <div class="container-fluid">
+
+            {% block info %} {% endblock %}
+
+            {% block error %} {% endblock %}
+
             {% block content %} {% endblock %}
 
             {% block sidebar %} {% endblock %}
 
-            {% block info %} {% endblock %}
 
             {% block register %} {% endblock %}
 

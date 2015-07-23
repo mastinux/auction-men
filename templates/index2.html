@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% load crispy_forms_tags %}
+
+{% block info %}
+    {% if message %}
+        <div class="alert alert-success alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                {{ message }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block error %}
+    {% if error %}
+        <div class="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="1">&times;</span></button>
+                {{ error }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-10 col-md-offset-1-">
+        {% if user.is_authenticated %}
+            <h1>Expiring auctions</h1>
+            <hr>
+            {% for product in expiring_auctions %}
+                <div class="col-md-3">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h4></h3><a class="pull-right" href="">{{ product.category.category_name }}</a></h4>
+                            <h4><a href="{% url 'bidplacing:show_product' product.id %}">{{ product.product_name }}</a></h4>
+                        </div>
+                        <div class="panel-body">
+                            <img src="//placehold.it/150x150" class="img-circle pull-right">
+                            <div class="clearfix"></div>
+                            <hr>
+
+                            <p>{{ product.description }}</p>
+                            <hr>
+                            <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="number" class="form-control" placeholder="Amount"
+                                           step="0.01" value="{{ product.get_best_bid }}"
+                                           min="{{ product.get_best_bid }}" name="amount">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit">bid!</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -66,6 +66,10 @@ class Product(models.Model):
         return (self.deadline_time - timezone.now()).__str__().split(',')[0]
 
     @staticmethod
+    def get_product(product_id):
+        return Product.objects.get(id=product_id)
+
+    @staticmethod
     def get_user_products(user):
         user_tmp = User.objects.get(username=user)
         return Product.objects.filter(seller=user_tmp)
@@ -128,6 +132,12 @@ class Bid(models.Model):
     amount = models.FloatField()
     bidding_time = models.DateTimeField(auto_now_add=True, blank=True)
 
+    @classmethod
+    def create(cls, product_name, bidder, amount):
+        bid = cls(product_name=product_name, bidder=bidder, amount=amount)
+        # do something with the book
+        return bid
+
     def __unicode__(self):
         string = "%s bidder=%s amount=%s bidding_time=%s" % \
                  (self.product_name, self.bidder, self.amount, self.bidding_time)
@@ -138,9 +148,9 @@ class Bid(models.Model):
             raise ValueError("Amount could not be negative")
         if timezone.now().__gt__(self.product_name.deadline_time):
             raise ValueError("Could not bid on an expired auction")
-        if self.amount < self.product_name.get_best_bid():
+        if float(self.amount) <= self.product_name.get_best_bid():
             raise ValueError(
-                "Could not bid an amount lower than max bid(%s) for the product"
+                "Could not bid an amount lower or equal than max bid(%s) for the product"
                 % self.product_name.get_best_bid())
         super(Bid, self).save(*args, **kwargs)
 

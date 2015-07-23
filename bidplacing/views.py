@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from django.forms import Form
 from django.http.response import HttpResponseRedirect
 from django.template import loader, RequestContext
@@ -7,6 +9,7 @@ from models import *
 from forms import BidForm, ProductForm
 from urllib import unquote
 from django.contrib.auth.models import User, AbstractUser# Create your views here.
+import pprint as pp
 
 def retrieve_basic_info(request):
     context = {}
@@ -14,6 +17,10 @@ def retrieve_basic_info(request):
     if 'message' in request.session:
         context['message'] = request.session['message']
         del request.session['message']
+
+    if 'error' in request.session:
+        context['error'] = request.session['error']
+        del request.session['error']
 
     if request.user.is_authenticated():
         context['user'] = request.user
@@ -33,7 +40,6 @@ def retrieve_basic_info(request):
 
 def main_page(request):
     context = retrieve_basic_info(request)
-
 # TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
     expiring_auctions = Product.get_coming_auctions(d=1)
     last_insertions = Product.get_last_inserts(d=1)
@@ -42,8 +48,11 @@ def main_page(request):
     context['expiring_auctions'] = expiring_auctions
     context['last_insertions'] = last_insertions
     context['suggested_products'] = suggested_products
+    context['form'] = BidForm()
 
-    template = loader.get_template('index.html')
+    template = loader.get_template('index2.html')
+
+    context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
 
@@ -77,10 +86,12 @@ def profile_page(request):
     return HttpResponse(template.render(context))
 
 
-def category_page(request):
+def category_page(request, cat_id):
     context = retrieve_basic_info(request)
-
-    category_id = unquote(request.get_full_path().split('/', 2)[2])
+    if cat_id:
+        category_id = unquote(request.get_full_path().split('/', 2)[2])
+    else:
+        category_id = cat_id
 
     category_object = Category.objects.get(id=category_id)
 
@@ -137,16 +148,20 @@ def product_page(request):
 
     return HttpResponse(template.render(context))
 
+@login_required
+def place_bid(request, product_id):
+    if request.method == 'POST':
+        product = Product.get_product(product_id)
+        amount = request.POST['amount']
+        bidder = request.user
+        bid = Bid.create(product, bidder, amount)
+        if float(bid.amount) <= product.get_best_bid():
+            request.session['error'] = 'Could not bid an amount lower or equal than max bid'
+        else:
+            request.session['message'] = 'You are the best bidder!!'
+            bid.save()
 
-def place_bid(request):
-    context = {}
-
-# TODO : code managing new bid for a product, redirecting to the same product page
-
-    template = loader.get_template('product.html')
-
-    return HttpResponse(template.render(context))
-
+    return HttpResponseRedirect('/')
 
 def search_page(request):
     context = retrieve_basic_info(request)
@@ -193,7 +208,6 @@ def new_product(request):
     form = ProductForm(request.POST or None)
 
     if form.is_valid():
-        print form
         product = form.save(commit=False)
         product.seller = request.user
 
@@ -207,3 +221,8 @@ def new_product(request):
     context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
+
+def show_product(request, product_id):
+    print request, product_id
+
+    return HttpResponseRedirect('/product/%s'%product_id)

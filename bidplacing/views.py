@@ -11,6 +11,7 @@ from urllib import unquote
 from django.contrib.auth.models import User, AbstractUser# Create your views here.
 import pprint as pp
 
+
 def retrieve_basic_info(request):
     context = {}
 
@@ -26,14 +27,12 @@ def retrieve_basic_info(request):
         context['user'] = request.user
 
     top_categories = Category.get_top_categories()
-    top_category_list = {}
-    category_children_list = {}
-    for c in top_categories:
-        top_category_list[c.id] = c.category_name
-        category_children_list[c.id] = c.get_children_category()
+    context['top_categories'] = top_categories
 
-    context['top_categories'] = top_category_list
-    context['category_children_list'] = category_children_list
+    #category_children = {}
+    #for c in top_categories:
+    #    category_children[c.id] = c.get_children_category()
+    #context['category_children'] = category_children
 
     return context
 
@@ -88,10 +87,11 @@ def profile_page(request):
 
 def category_page(request, cat_id):
     context = retrieve_basic_info(request)
-    if cat_id:
-        category_id = unquote(request.get_full_path().split('/', 2)[2])
-    else:
-        category_id = cat_id
+    category_id = cat_id.split('/')[0]
+    #if cat_id:
+    #category_id = unquote(request.get_full_path().split('/')[3])
+    #else:
+    #    category_id = cat_id
 
     category_object = Category.objects.get(id=category_id)
 

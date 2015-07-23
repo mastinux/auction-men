@@ -97,21 +97,15 @@ class Product(models.Model):
     @staticmethod
     def get_last_inserts(m=0, h=0, d=0):
         start_time = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
-        return Product.objects.filter(insertion_time__gt=start_time)
+        return Product.objects.filter(insertion_time__gt=start_time).order_by('insertion_time').reverse()
 
     @staticmethod
     def get_last_inserts_expired(m=0, h=0, d=0):
-        return Product.get_last_inserts(m, h, d).filter(deadline_time__lt=timezone.now())
+        return Product.get_last_inserts(m, h, d).filter(deadline_time__lt=timezone.now()).order_by('insertion_time')
 
     @staticmethod
     def get_last_inserts_coming(m=0, h=0, d=0):
-        return Product.get_last_inserts(m, h, d).filter(deadline_time__gt=timezone.now())
-
-# TODO : delete because implemented by Bid.get_category_product
-#    @staticmethod
-#    def get_category_products(category_name):
-#        category = Category.objects.get(category_name=category_name)
-#        return Product.objects.filter(category__exact=category)
+        return Product.get_last_inserts(m, h, d).filter(deadline_time__gt=timezone.now()).order_by('insertion_time')
 
     def get_past_bids(self):
         return Bid.objects.filter(product_name=self.id).order_by('bidding_time')

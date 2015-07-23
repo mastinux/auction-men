@@ -3,17 +3,15 @@
 {% block info %}
 
     {% if message %}
-        <div class="alert alert-success">
+        <div class="alert alert-success" xmlns="http://www.w3.org/1999/html">
            {{ message }}
         </div>
     {% endif %}
-    <div>
-        <br>CONTACT US
-    </div>
-    <div>
-        <br><a href="https://github.com/Neuro17">neuro17</a>
-    </div>
-    <div>
-        <br><a href="https://github.com/mastinux">mastinux</a>
+    <div class="col-lg-offset-1">
+        <h1>Contact us</h1>
+
+        <br><a href="https://github.com/Neuro17"><h3>neuro17</h3></a>
+
+        <br><a href="https://github.com/mastinux"><h3>mastinux</h3></a>
     </div>
 {% endblock %}

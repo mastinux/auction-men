@@ -56,6 +56,19 @@ def main_page(request):
     return HttpResponse(template.render(context))
 
 
+def top_bids_page(request):
+    context = retrieve_basic_info(request)
+
+    unexpired_auctions = Product.objects.filter(deadline_time__gt=timezone.now())
+
+    context['top_bids'] = Bid.objects.filter(product_name__in=[product.id for product in unexpired_auctions])\
+        .order_by('-amount')
+
+    template = loader.get_template('top_bids.html')
+
+    return HttpResponse(template.render(context))
+
+
 def contact_page(request):
     context = retrieve_basic_info(request)
 

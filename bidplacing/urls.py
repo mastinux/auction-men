@@ -27,6 +27,9 @@ urlpatterns = [
         name='show_product'),
     url(r'^product/(?P<product_id>[0-9]+)/new-bid',
         views.place_bid,
-        name='place_bid'
-    )
+        name='place_bid'),
+
+    url(r'^top_bids',
+        views.top_bids_page,
+        name='top_bids_page')
 ]

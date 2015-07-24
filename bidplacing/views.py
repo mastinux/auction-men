@@ -56,13 +56,30 @@ def main_page(request):
     return HttpResponse(template.render(context))
 
 
+def purchased_products_page(request):
+    context = retrieve_basic_info(request)
+
+    purchased_products = Product.get_recent_purchased_products(d=1)
+    context['purchased_products'] = purchased_products
+
+    purchase_bids = {}
+    for p in purchased_products:
+        purchase_bids[p.id] = Bid.objects.filter(product_name=p.id).order_by('-amount')[0]
+    print purchase_bids
+    context['purchase_bids'] = purchase_bids
+
+    template = loader.get_template('purchased_products.html')
+
+    return HttpResponse(template.render(context))
+
+
 def top_bids_page(request):
     context = retrieve_basic_info(request)
 
     unexpired_auctions = Product.objects.filter(deadline_time__gt=timezone.now())
 
     context['top_bids'] = Bid.objects.filter(product_name__in=[product.id for product in unexpired_auctions])\
-        .order_by('-amount')
+        .order_by('-amount')[:15]
 
     template = loader.get_template('top_bids.html')
 

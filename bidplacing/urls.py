@@ -28,8 +28,10 @@ urlpatterns = [
     url(r'^product/(?P<product_id>[0-9]+)/new-bid',
         views.place_bid,
         name='place_bid'),
-
     url(r'^top_bids',
         views.top_bids_page,
-        name='top_bids_page')
+        name='top_bids_page'),
+    url(r'^purchased_products',
+        views.purchased_products_page,
+        name='purchased_products_page')
 ]

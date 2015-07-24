@@ -17,7 +17,7 @@
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
               <!-- class="active" (add to specific page requested)-->
-            <li><a href="#">Product sold</a></li>
+            <li><a href="{% url 'bidplacing:purchased_products_page' %}">Product sold</a></li>
             <li><a href="{% url 'bidplacing:top_bids_page' %}">Top bids</a></li>
             <li><a href="{% url 'bidplacing:about_page' %}">About</a></li>
             <li><a href="{% url 'bidplacing:contact_page' %}">Contact</a></li>

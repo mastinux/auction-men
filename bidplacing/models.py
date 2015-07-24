@@ -17,7 +17,7 @@ class Category(models.Model):
 
     @staticmethod
     def get_top_categories():
-        return Category.objects.filter(level=0)
+        return Category.objects.filter(level=0).order_by('category_name')
 
     def is_top_category(self):
         if self.level == 0:
@@ -79,6 +79,26 @@ class Product(models.Model):
     def get_unexpired_user_products(user):
         user_tmp = User.objects.get(username=user)
         return Product.objects.filter(seller=user_tmp).exclude(deadline_time__lt=timezone.now())
+
+    @staticmethod
+    def get_recent_purchased_products(m=0, h=0, d=0):
+
+        start = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
+        end = timezone.now()
+
+        expired_auctions = Product.objects.filter(deadline_time__gt=start,deadline_time__lt=end)
+
+        product_id_list = Bid.objects.values('product_name__id').distinct()\
+            .filter(product_name__in=[product.id for product in expired_auctions])
+
+        purchased_products = []
+        for product_id in product_id_list:
+            p_id = product_id.get('product_name__id')
+
+            max_bid = Bid.objects.filter(product_name=p_id).order_by('-bidding_time')[0]
+            purchased_products.append(max_bid.product_name)
+
+        return purchased_products
 
     @staticmethod
     def get_purchased_products(user):

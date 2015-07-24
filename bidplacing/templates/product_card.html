@@ -1,7 +1,7 @@
 <div class="col-md-3">
     <div class="panel panel-default">
         <div class="panel-heading">
-            <h6><a class="pull-right" href="{% url 'bidplacing:show_category' product.category.id %}">{{ product.category.category_name | capfirst}}</a></h6>
+            {% comment %}<h6><a class="pull-right" href="{% url 'bidplacing:show_category' product.category.id %}">{{ product.category.category_name | capfirst}}</a></h6>{% endcomment %}
             <h4><a href="{% url 'bidplacing:show_product' product.id %}">{{ product.product_name | capfirst}}</a></h4>
         </div>
         <div class="panel-body">
@@ -22,19 +22,22 @@
                         {% csrf_token %}
 
                         <div class="input-group">
-                            <input type="number" class="form-control" placeholder="Amount"
-                                   step="0.01" value="{{ product.get_best_bid }}"
+
+                            {% if product.seller.username != user.username %}
+                                <input type="number" class="form-control" placeholder="Amount"
+                                   step="0.1" value="{{ product.get_best_bid }}"
                                    min="{{ product.get_best_bid }}" name="amount">
-                            <div class="input-group-btn">
-                                <button class="btn btn-primary" type="submit">bid!</button>
-                            </div>
+                                <div class="input-group-btn">
+                                    <button class="btn btn-primary" type="submit">bid!</button>
+                                </div>
+                            {% endif %}
                         </div>
 
                     </form>
                 </div>
-
-                <a href="{% url 'bidplacing:show_product' product.id %}" class="btn btn-primary col-md-offset-1" role="button">Details</a>
-
+                <div class="row">
+                    <a href="{% url 'bidplacing:show_product' product.id %}" class="btn btn-primary col-md-offset-1" role="button">Details</a>
+                </div>
 
         </div>
     </div>

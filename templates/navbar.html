@@ -16,25 +16,24 @@
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                  Products by <strong>Category</strong><span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                {% for category in top_categories %}
+                    <li><a href="{% url 'bidplacing:show_category' category.id %}">{{ category.category_name }}</a></li>
+                {% endfor %}
+              </ul>
+            </li>
               <!-- class="active" (add to specific page requested)-->
-            <li><a href="{% url 'bidplacing:purchased_products_page' %}">Product sold</a></li>
+            <li><a href="{% url 'bidplacing:purchased_products_page' %}">
+                Purchased products</a>
+            </li>
             <li><a href="{% url 'bidplacing:top_bids_page' %}">Top bids</a></li>
             <li><a href="{% url 'bidplacing:about_page' %}">About</a></li>
             <li><a href="{% url 'bidplacing:contact_page' %}">Contact</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-
-              <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                      Products by <strong>Category</strong><span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    {% for category in top_categories %}
-                        <li><a href="{% url 'bidplacing:show_category' category.id %}">{{ category.category_name }}</a></li>
-                    {% endfor %}
-                  </ul>
-              </li>
-
-
               <form class="navbar-form navbar-left" role="search" action="{% url 'bidplacing:search_page' %}">
                 <div class="form-group">
                   <input type="text" class="form-control" placeholder="Products and more" name="searched_value">
@@ -75,7 +74,10 @@
                   <ul class="dropdown-menu">
 
                     <li><a href="/accounts/profile/">Your profile</a></li>
-                    <li><a href="/accounts/password/change/">Change password</a></li>
+                    <li><a href="{% url 'bidplacing:new_product' %}">Sell new product</a></li>
+                    <li><a href="{% url 'bidplacing:selling_page' %}">Selling products </a></li>
+                    <li><a href="{% url 'bidplacing:purchased_products_page' %}">Purchased products </a></li>
+
                     <li class="disabled"><a href="#">[Disabled link]</a></li>
 
                     <li role="separator" class="divider"></li>
@@ -83,6 +85,7 @@
                     <!--<li class="dropdown-header">[Header second section]</li>-->
                     <li><a href="#">Modify profile</a></li>
                     <li><a href="#">Profile settings</a></li>
+                    <li><a href="/accounts/password/change/">Change password</a></li>
                     <li><a href="/accounts/logout">Log out</a></li>
                   </ul>
                 </li>

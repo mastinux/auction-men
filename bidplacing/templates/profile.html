@@ -56,11 +56,30 @@
 
 
           <ul class="list-group">
-            <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">{{ user_selling | length }}</span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">{{ user_bids | length }}</span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">{{ user_purchases | length }}</span>&nbsp</li>
-              <li class="list-group-item text-right"><span class="pull-left"><strong>New bids</strong></span><span class="badge"><a style="color:#ffffff" href="{% url 'bidplacing:new_product' %}">+</a></span>&nbsp</li>
+            <li class="list-group-item text-muted">Activity
+                <i class="fa fa-dashboard fa-1x"></i>
+            </li>
+            <li class="list-group-item text-right"><span class="pull-left">
+                <a href="{% url 'bidplacing:selling_page' %}">
+                <strong>Selling</strong></a></span>
+                <span class="badge">{{ user_selling | length }}</span>&nbsp
+            </li>
+            <li class="list-group-item text-right"><span class="pull-left">
+                <strong>Bids/offers</strong></span>
+                <span class="badge">{{ user_bids | length }}</span>&nbsp
+            </li>
+            <li class="list-group-item text-right"><span class="pull-left">
+                <a href="{% url 'bidplacing:purchased_products_page' %}">
+                    <strong>Purchase History</strong>
+                </a>
+                </span>
+                <span class="badge">{{ user_purchases | length }}</span>&nbsp
+            </li>
+              <li class="list-group-item text-right"><span class="pull-left">
+                <strong>New bids</strong></span><span class="badge">
+                <a style="color:#ffffff" href="{% url 'bidplacing:new_product' %}">+</a>
+                </span>&nbsp
+              </li>
           </ul>
 
           <!--<div class="panel panel-default">
@@ -157,45 +176,7 @@
              </div><!--/tab-pane-->
 
             <div class="tab-pane" id="selling">
-               <div class="table">
-                <table class="table table-hover table-bordered">
-                  <thead>
-                    <tr>
-                      <th>#</th>
-                      <th>Product</th>
-                      <th>Description</th>
-                      <th>Start price</th>
-                      <th>Insertion time</th>
-                      <th>Deadline time</th>
-                      <th>Time left </th>
-                    </tr>
-                  </thead>
-                  <tbody id="items">
-
-                    {% for item in user_selling %}
-
-                        <tr>
-                          <td>1</td>
-                          <td><a href="{% url 'bidplacing:show_product' item.id %}">{{ item.product_name }}</a></td>
-                          <td>{{ item.description }}</td>
-                          <td>{{ item.start_price }}</td>
-                          <td>{{ item.insertion_time }}</td>
-                          <td>{{ item.deadline_time }}</td>
-                          <td>{{ item.get_remaining_time}} </td>
-                        </tr>
-                    {% endfor %}
-
-                  </tbody>
-                </table>
-                <hr>
-                <div class="row">
-                    <div class="col-md-4 col-md-offset-4 text-center">
-                      <ul class="pagination" id="myPager">
-
-                        </ul>
-                    </div>
-                </div>
-              </div><!--/table-resp-->
+                {% include 'selling_products_table.html' with user_selling=selling_products %}
             </div>
 
              <div class="tab-pane" id="purchases">

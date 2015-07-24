@@ -24,7 +24,7 @@ class ProductForm(forms.ModelForm):
     def clean_deadline_time(self):
         deadline = self.cleaned_data['deadline_time']
         today = datetime.datetime.today().date()
-        if deadline < today:
+        if deadline <= today:
             raise ValidationError('deadline must be a future date')
         else:
             return deadline

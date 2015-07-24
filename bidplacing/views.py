@@ -55,7 +55,7 @@ def main_page(request):
 
     return HttpResponse(template.render(context))
 
-
+@login_required
 def purchased_products_page(request):
     context = retrieve_basic_info(request)
 
@@ -64,7 +64,8 @@ def purchased_products_page(request):
 
     purchase_bids = {}
     for p in purchased_products:
-        purchase_bids[p.id] = Bid.objects.filter(product_name=p.id).order_by('-amount')[0]
+        purchase_bids[p.id] = Bid.objects.filter(product_name=p.id)\
+            .order_by('-amount')[0]
     print purchase_bids
     context['purchase_bids'] = purchase_bids
 
@@ -72,13 +73,28 @@ def purchased_products_page(request):
 
     return HttpResponse(template.render(context))
 
+@login_required
+def selling_products_page(request):
+    context = retrieve_basic_info(request)
+
+    selling_products = Product.get_unexpired_user_products(
+        request.user.username).order_by('deadline_time')
+
+    context['selling_products'] = selling_products
+
+    template = loader.get_template('selling_products.html')
+
+    return HttpResponse(template.render(context))
+
 
 def top_bids_page(request):
     context = retrieve_basic_info(request)
 
-    unexpired_auctions = Product.objects.filter(deadline_time__gt=timezone.now())
+    unexpired_auctions = Product.objects.filter(
+        deadline_time__gt=timezone.now())
 
-    context['top_bids'] = Bid.objects.filter(product_name__in=[product.id for product in unexpired_auctions])\
+    context['top_bids'] = Bid.objects.filter(
+        product_name__in=[product.id for product in unexpired_auctions])\
         .order_by('-amount')[:15]
 
     template = loader.get_template('top_bids.html')
@@ -106,9 +122,12 @@ def about_page(request):
 def profile_page(request):
     context = retrieve_basic_info(request)
 
-    context['user_bids'] = Bid.get_placed_bids(request.user.username)
-    context['user_selling'] = Product.get_user_products(request.user.username)
-    context['user_purchases'] = Product.get_purchased_products(request.user.username)
+    context['user_bids'] = Bid.get_placed_bids(request.user.username)\
+        .order_by('bidding_time')[:10]
+    context['selling_products'] = Product.get_user_products(request.user.username)\
+        .order_by('-insertion_time')[:10]
+    context['user_purchases'] = Product.get_purchased_products(
+        request.user.username)
 
     template = loader.get_template('profile.html')
 
@@ -167,7 +186,9 @@ def product_page(request):
     past_sales = Product.get_expired_user_products(product.seller)
     context['past_sales'] = past_sales
 
-    same_category_products = category.get_category_product().exclude(id=product.id)
+    same_category_products = category.get_category_product()\
+        .exclude(id=product.id)
+
     context['same_category_products'] = same_category_products
 
     template = loader.get_template('product.html')
@@ -183,7 +204,8 @@ def place_bid(request, product_id):
         bidder = request.user
         bid = Bid.create(product, bidder, amount)
         if float(bid.amount) <= product.get_best_bid():
-            request.session['error'] = 'Could not bid an amount lower or equal than max bid'
+            error = 'Could not bid an amount lower or equal than max bid'
+            request.session['error'] = error
         else:
             request.session['message'] = 'You are the best bidder!!'
             bid.save()
@@ -197,7 +219,9 @@ def search_page(request):
     if len(searched_value) > 2:
         context['searched_value'] = searched_value
 
-        categories_found = Category.objects.filter(category_name__icontains=searched_value)
+        categories_found = Category.objects.filter(
+            category_name__icontains=searched_value)
+
         context['categories_found'] = categories_found
 
         category_products_found = {}
@@ -206,7 +230,9 @@ def search_page(request):
             category_products_found[category_found.id] = category_products
         context['category_products_found'] = category_products_found
 
-        products_found = Product.objects.filter(product_name__icontains=searched_value)
+        products_found = Product.objects.filter(
+            product_name__icontains=searched_value)
+
         context['products_found'] = products_found
 
     template = loader.get_template('search.html')
@@ -272,7 +298,9 @@ def show_product(request, product_id):
     past_sales = Product.get_expired_user_products(product.seller)
     context['past_sales'] = past_sales
 
-    same_category_products = category.get_category_product().exclude(id=product.id)
+    same_category_products = category.get_category_product().exclude(
+        id=product.id)
+
     context['same_category_products'] = same_category_products
 
     template = loader.get_template('product.html')

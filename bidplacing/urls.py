@@ -21,17 +21,20 @@ urlpatterns = [
         name='show_category'
         ),
 
-    url(r'^product/new-product', views.new_product, name='new_product'),
-    url(r'^product/(?P<product_id>[0-9]+)/$',
+    url(r'^products/product/new-product', views.new_product, name='new_product'),
+    url(r'^products/product/(?P<product_id>[0-9]+)/$',
         views.show_product,
         name='show_product'),
-    url(r'^product/(?P<product_id>[0-9]+)/new-bid',
+    url(r'^products/product/(?P<product_id>[0-9]+)/new-bid',
         views.place_bid,
         name='place_bid'),
     url(r'^top_bids',
         views.top_bids_page,
         name='top_bids_page'),
-    url(r'^purchased_products',
+    url(r'^products/purchased_products',
         views.purchased_products_page,
-        name='purchased_products_page')
+        name='purchased_products_page'),
+    url(r'^products/selling_products/',
+        views.selling_products_page,
+        name='selling_page')
 ]

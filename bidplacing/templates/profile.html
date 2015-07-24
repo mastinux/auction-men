@@ -59,7 +59,7 @@
             <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Selling</strong></span><span class="badge">{{ user_selling | length }}</span>&nbsp</li>
             <li class="list-group-item text-right"><span class="pull-left"><strong>Bids/offers</strong></span><span class="badge">{{ user_bids | length }}</span>&nbsp</li>
-            <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">84</span>&nbsp</li>
+            <li class="list-group-item text-right"><span class="pull-left"><strong>Purchase History</strong></span><span class="badge">{{ user_purchases | length }}</span>&nbsp</li>
               <li class="list-group-item text-right"><span class="pull-left"><strong>New bids</strong></span><span class="badge"><a style="color:#ffffff" href="{% url 'bidplacing:new_product' %}">+</a></span>&nbsp</li>
           </ul>
 
@@ -76,7 +76,7 @@
           <ul class="nav nav-tabs" id="myTab">
             <li class="active"><a href="#home" data-toggle="tab">Your bids</a></li>
             <li><a href="#selling" data-toggle="tab">Selling</a></li>
-            <li><a href="#messages" data-toggle="tab">Purchase History</a></li>
+            <li><a href="#purchases" data-toggle="tab">Purchase History</a></li>
             <li><a href="#settings" data-toggle="tab">Settings</a></li>
           </ul>
 
@@ -100,11 +100,17 @@
                   {% for bid in user_bids %}
                          <tr>
                           <td>{{ forloop.counter }}</td>
-                          <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000"> {{ bid.product_name.product_name }}</a></td>
+                          <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000">
+                              {{ bid.product_name.product_name }}</a></td>
                           <td>{{ bid.product_name.seller }}</td>
+                          <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
-                          <td>{{ bid.product_name.best_bid }}</td>
-                          <td>{{ bid.product_name.get_remaining_time }} </td>
+                          <td>{{ bid.product_name.get_best_bid }}</td>
+                          {% if '-' not in bid.product_name.get_remaining_time %}
+                            <td>{{ bid.product_name.get_remaining_time }} </td>
+                          {% else %}
+                            <td> <strong>Expired</strong> </td>
+                          {% endif %}
                         </tr>
                     {% endfor %}
                   </tbody>
@@ -151,7 +157,7 @@
              </div><!--/tab-pane-->
 
             <div class="tab-pane" id="selling">
-                  <div class="table">
+               <div class="table">
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
@@ -192,9 +198,45 @@
               </div><!--/table-resp-->
             </div>
 
-             <div class="tab-pane" id="messages">
+             <div class="tab-pane" id="purchases">
 
-               <h2></h2>
+               <div class="table">
+                <table class="table table-hover table-bordered">
+                  <thead>
+                    <tr>
+                      <th>#</th>
+                      <th>Product</th>
+                      <th>Description</th>
+                      <th>Purchase Price</th>
+                      <th>Purchase time</th>
+                      <th>Seller</th>
+                    </tr>
+                  </thead>
+                  <tbody id="items">
+
+                    {% for item in user_purchases %}
+
+                        <tr>
+                          <td>1</td>
+                          <td><a href="{% url 'bidplacing:show_product' item.id %}">{{ item.product_name }}</a></td>
+                          <td>{{ item.description }}</td>
+                          <td>{{ item.best_bid }}</td>
+                          <td>{{ item.deadline_time }}</td>
+                          <td>{{ item.seller }}</td>
+                        </tr>
+                    {% endfor %}
+
+                  </tbody>
+                </table>
+                <hr>
+                <div class="row">
+                    <div class="col-md-4 col-md-offset-4 text-center">
+                      <ul class="pagination" id="myPager">
+
+                        </ul>
+                    </div>
+                </div>
+              </div><!--/table-resp-->
 
                <ul class="list-group">
                   <li class="list-group-item text-muted">Inbox</li>
@@ -211,10 +253,7 @@
 
              </div><!--/tab-pane-->
              <div class="tab-pane" id="settings">
-
-
-                  <hr>
-                  <form class="form" action="{% url 'bidplacing:update_profile' %}" method="post" id="registrationForm"> {% csrf_token %}
+                <form class="form" action="{% url 'bidplacing:update_profile' %}" method="post" id="registrationForm"> {% csrf_token %}
                       <div class="form-group">
 
                           <div class="col-xs-6">
@@ -247,7 +286,7 @@
                             </div>
                       </div>
               	</form>
-              </div>
+             </div>
 
               </div><!--/tab-pane-->
           </div><!--/tab-content-->

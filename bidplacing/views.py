@@ -40,7 +40,7 @@ def retrieve_basic_info(request):
 def main_page(request):
     context = retrieve_basic_info(request)
 # TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
-    expiring_auctions = Product.get_coming_auctions(d=1)
+    expiring_auctions = Product.get_unexpired_auctions(d=1)
     last_insertions = Product.get_last_inserts(d=1)
 # TODO : develop recommendations system
     suggested_products = None
@@ -78,6 +78,8 @@ def profile_page(request):
 
     context['user_bids'] = Bid.get_placed_bids(request.user.username)
     context['user_selling'] = Product.get_user_products(request.user.username)
+    context['user_purchases'] = Product.get_purchased_products(request.user.username)
+
     template = loader.get_template('profile.html')
 
     context = RequestContext(request, context)
@@ -142,10 +144,11 @@ def product_page(request):
     context = RequestContext(request, context)
     return HttpResponse(template.render(context))
 
+
 @login_required
 def place_bid(request, product_id):
     if request.method == 'POST':
-        product = Product.get_product(product_id)
+        product = Product.objects.get(id=product_id)
         amount = request.POST['amount']
         bidder = request.user
         bid = Bid.create(product, bidder, amount)
@@ -155,6 +158,7 @@ def place_bid(request, product_id):
             request.session['message'] = 'You are the best bidder!!'
             bid.save()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+
 
 def search_page(request):
     context = retrieve_basic_info(request)

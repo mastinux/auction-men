@@ -66,10 +66,6 @@ class Product(models.Model):
         return (self.deadline_time - timezone.now()).__str__().split(',')[0]
 
     @staticmethod
-    def get_product(product_id):
-        return Product.objects.get(id=product_id)
-
-    @staticmethod
     def get_user_products(user):
         user_tmp = User.objects.get(username=user)
         return Product.objects.filter(seller=user_tmp)
@@ -80,7 +76,7 @@ class Product(models.Model):
         return Product.objects.filter(seller=user_tmp, deadline_time__lt=timezone.now())
 
     @staticmethod
-    def get_coming_user_products(user):
+    def get_unexpired_user_products(user):
         user_tmp = User.objects.get(username=user)
         return Product.objects.filter(seller=user_tmp).exclude(deadline_time__lt=timezone.now())
 
@@ -88,7 +84,10 @@ class Product(models.Model):
     def get_purchased_products(user):
         user_tmp = User.objects.get(username=user)
 
-        product_id_list = Bid.objects.values('product_name__id').distinct()
+        expired_auctions = Product.objects.filter(deadline_time__lt=timezone.now())
+
+        product_id_list = Bid.objects.values('product_name__id').distinct()\
+            .filter(product_name__in=[product.id for product in expired_auctions])
 
         purchased_products = []
         for product_id in product_id_list:
@@ -96,18 +95,17 @@ class Product(models.Model):
 
             max_bid = Bid.objects.filter(product_name=p_id).order_by('-bidding_time')[0]
             if max_bid.bidder == user_tmp:
-                purchased_products.append(max_bid)
+                purchased_products.append(max_bid.product_name)
 
         return purchased_products
 
-
+    @staticmethod
+    def get_unexpired_ranged_products(start, end):
+        return Product.objects.filter(deadline_time__gt=timezone.now())\
+            .filter(start_price__gte=start).exclude(start_price__gt=end)
 
     @staticmethod
-    def get_ranged_products(start, end):
-        return Product.objects.filter(start_price__gte=start).exclude(start_price__gt=end)
-
-    @staticmethod
-    def get_coming_auctions(m=0, h=0, d=0):
+    def get_unexpired_auctions(m=0, h=0, d=0):
         start_time = timezone.now()
         end_time = start_time + timedelta(minutes=m) + timedelta(hours=h) + timedelta(days=d)
         return Product.objects.filter(deadline_time__gt=start_time, deadline_time__lt=end_time)
@@ -122,7 +120,7 @@ class Product(models.Model):
         return Product.get_last_inserts(m, h, d).filter(deadline_time__lt=timezone.now()).order_by('insertion_time')
 
     @staticmethod
-    def get_last_inserts_coming(m=0, h=0, d=0):
+    def get_last_inserts_unexpired(m=0, h=0, d=0):
         return Product.get_last_inserts(m, h, d).filter(deadline_time__gt=timezone.now()).order_by('insertion_time')
 
     def get_past_bids(self):
@@ -178,7 +176,7 @@ class Bid(models.Model):
             product_name__deadline_time__lt=timezone.now(), bidder=bidder)
 
     @staticmethod
-    def get_coming_placed_bids(username):
+    def get_unexpired_placed_bids(username):
         bidder = User.objects.get(username=username)
         return Bid.objects.filter(
             product_name__deadline_time__gt=timezone.now(), bidder=bidder)

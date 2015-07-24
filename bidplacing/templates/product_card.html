@@ -20,6 +20,7 @@
                 <div class="col-md-8">
                     <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
                         {% csrf_token %}
+
                         <div class="input-group">
                             <input type="number" class="form-control" placeholder="Amount"
                                    step="0.01" value="{{ product.get_best_bid }}"
@@ -28,6 +29,7 @@
                                 <button class="btn btn-primary" type="submit">bid!</button>
                             </div>
                         </div>
+
                     </form>
                 </div>
 

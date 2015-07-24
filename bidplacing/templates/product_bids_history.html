@@ -3,8 +3,6 @@
       <thead>
         <tr>
           <th>#</th>
-          <th>Seller</th>
-          <th>Start price</th>
           <th>Bidder</th>
           <th>Bidding Time</th>
           <th>Amount</th>
@@ -15,8 +13,6 @@
       {% for item in product_bids %}
              <tr>
               <td>{{ forloop.counter }}</td>
-              <td>{{ item.product_name.seller }}</td>
-              <td>{{ item.product_name.start_price }}</td>
               <td>{{ item.bidder.username }}</td>
               <td>{{ item.bidding_time }}</td>
               <td>{{ item.amount}}</td>

@@ -42,7 +42,8 @@
                 <h1>Products found in categories related to {{ searched_value }}</h1>
                 <hr>
                 {% for category in categories_found %}
-                        <h2>Category:  <a href="/category/{{ category.id }}">{{ category.category_name }}</a></h2>
+                        <h2>Category:  <a href="{% url 'bidplacing:show_category' category.id %}">
+                            {{ category.category_name }}</a></h2>
                         <hr>
                         {% for c_id,products in category_products_found.iteritems %}
                             {% if c_id == category.id %}

@@ -68,14 +68,13 @@
                         {% endif %}
                     </h4>
                     <h4>Insertion time : {{ product.insertion_time }}</h4>
-                    {% if '-' not in bid.product_name.get_remaining_time %}
-                            <h4>Remaining time : {{ product.get_remaining_time }}</h4>
-                            <h4>Deadline time : {{ product.deadline_time }}</h4>
-                          {% else %}
-                            <h4><strong>Expired</strong></h4>
-                            <h4>Purchase time : {{ product.deadline_time }}</h4>
-                          {% endif %}
-
+                    {% if product.get_remaining_time == None %}
+                        <h4><strong>Expired</strong></h4>
+                        <h4>Purchase time : {{ product.deadline_time }}</h4>
+                    {% else %}
+                        <h4>Remaining time : {{ product.get_remaining_time }}</h4>
+                        <h4>Deadline time : {{ product.deadline_time }}</h4>
+                    {% endif %}
                     <hr>
                 </div>
                 <div class="col-md-8">

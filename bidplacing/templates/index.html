@@ -22,7 +22,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         {% if user.is_authenticated %}
             <h1>Expiring auctions</h1>
             <hr>
@@ -33,7 +33,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         <h1>Last insertions</h1>
         <hr>
         {% for item in last_insertions %}
@@ -43,7 +43,7 @@
 </div>
 
 <div class="row">
-    <div class="col-md-10 col-md-offset-1">
+    <div class="col-md-12">
         <h1>Recommended for you</h1>
         <hr>
         {% for item in recommended %}

@@ -63,7 +63,12 @@ class Product(models.Model):
         super(Product, self).save(*args, **kwargs)
 
     def get_remaining_time(self):
-        return (self.deadline_time - timezone.now()).__str__().split(',')[0]
+        remaining_time = self.deadline_time - timezone.now()
+
+        if remaining_time.days < 0 or remaining_time.seconds < 0:
+            return None
+        else:
+            return remaining_time
 
     @staticmethod
     def get_user_products(user):
@@ -126,7 +131,7 @@ class Product(models.Model):
 
     @staticmethod
     def get_unexpired_auctions(m=0, h=0, d=0):
-        start_time = timezone.now()
+        start_time = timezone.now() + timedelta(hours=2)
         end_time = start_time + timedelta(minutes=m) + timedelta(hours=h) + timedelta(days=d)
         return Product.objects.filter(deadline_time__gt=start_time, deadline_time__lt=end_time)
 

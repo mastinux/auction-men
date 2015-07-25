@@ -55,6 +55,7 @@ def main_page(request):
 
     return HttpResponse(template.render(context))
 
+
 @login_required
 def purchased_products_page(request):
     context = retrieve_basic_info(request)

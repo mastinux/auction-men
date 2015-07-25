@@ -57,8 +57,6 @@
                         {% endif %}
 
                     </div><br>
-
-                    <h4>Seller : {{ product.seller | capfirst}}</h4>
                     <h4>Start price : {{ product.start_price }}</h4>
                     <h4>Current price:
                         {% if product.get_best_bid == None %}
@@ -67,6 +65,7 @@
                             {{ product.get_best_bid }}
                         {% endif %}
                     </h4>
+                    <hr>
                     <h4>Insertion time : {{ product.insertion_time }}</h4>
                     {% if product.get_remaining_time == None %}
                         <h4><strong>Expired</strong></h4>
@@ -75,6 +74,11 @@
                         <h4>Remaining time : {{ product.get_remaining_time }}</h4>
                         <h4>Deadline time : {{ product.deadline_time }}</h4>
                     {% endif %}
+                    <hr>
+                    <h4>Seller : {{ product.seller | capfirst}}</h4>
+                    <h4>{{ product.seller | capfirst}}'s products : {{ seller_products }}</h4>
+                    <h4>{{ product.seller | capfirst}}'s bids : {{ seller_bids }}</h4>
+                    <h4>{{ product.seller | capfirst}}'s purchases : {{ seller_purchases }}</h4>
                     <hr>
                 </div>
                 <div class="col-md-8">

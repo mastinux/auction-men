@@ -20,6 +20,11 @@
 
 {% block content %}
 
+    <div class="row">
+  		<div class="col-sm-10 col-lg-offset-1"><h1>Selling products</h1></div>
+    </div>
+    <hr>
+
     {% include 'selling_products_table.html' with user_selling=selling_products%}
 
 {% endblock %}

@@ -29,7 +29,7 @@ class Category(models.Model):
         return Category.objects.filter(parent=self.id, level=self.level+1)
 
     def get_category_product(self):
-        return Product.objects.filter(category_id=self.id, deadline_time__gt=timezone.now())
+        return Product.objects.filter(category_id=self.id, deadline_time__gt=timezone.now()).order_by('deadline_time')
 
 
 class Product(models.Model):
@@ -64,7 +64,6 @@ class Product(models.Model):
 
     def get_remaining_time(self):
         remaining_time = self.deadline_time - timezone.now()
-
         if remaining_time.days < 0 or remaining_time.seconds < 0:
             return None
         else:
@@ -87,11 +86,10 @@ class Product(models.Model):
 
     @staticmethod
     def get_recent_purchased_products(m=0, h=0, d=0):
-
         start = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
         end = timezone.now()
 
-        expired_auctions = Product.objects.filter(deadline_time__gt=start,deadline_time__lt=end)
+        expired_auctions = Product.objects.filter(deadline_time__gt=start, deadline_time__lt=end)
 
         product_id_list = Bid.objects.values('product_name__id').distinct()\
             .filter(product_name__in=[product.id for product in expired_auctions])
@@ -125,6 +123,21 @@ class Product(models.Model):
         return purchased_products
 
     @staticmethod
+    def get_suggested_products(user):
+        user_purchased_products = Product.get_purchased_products(user)
+
+        category_list = Category.objects.filter(id__in=[p.category.id for p in user_purchased_products])
+
+        suggested_products = []
+        for c in category_list:
+            suggested_products.append(c.get_category_product()[:4])
+
+        if suggested_products.__len__() > 0:
+            return suggested_products[0]
+        else:
+            return None
+
+    @staticmethod
     def get_unexpired_ranged_products(start, end):
         return Product.objects.filter(deadline_time__gt=timezone.now())\
             .filter(start_price__gte=start).exclude(start_price__gt=end)
@@ -138,7 +151,8 @@ class Product(models.Model):
     @staticmethod
     def get_last_inserts(m=0, h=0, d=0):
         start_time = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
-        return Product.objects.filter(insertion_time__gt=start_time).order_by('insertion_time').reverse()
+        return Product.objects.filter(insertion_time__gt=start_time, deadline_time__gt=timezone.now())\
+            .order_by('insertion_time').reverse()
 
     @staticmethod
     def get_last_inserts_expired(m=0, h=0, d=0):

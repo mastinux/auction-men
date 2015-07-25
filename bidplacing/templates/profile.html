@@ -60,13 +60,13 @@
                 <i class="fa fa-dashboard fa-1x"></i>
             </li>
             <li class="list-group-item text-right"><span class="pull-left">
-                <a href="{% url 'bidplacing:selling_page' %}">
-                <strong>Selling</strong></a></span>
-                <span class="badge">{{ user_selling | length }}</span>&nbsp
-            </li>
-            <li class="list-group-item text-right"><span class="pull-left">
                 <strong>Bids/offers</strong></span>
                 <span class="badge">{{ user_bids | length }}</span>&nbsp
+            </li>
+            <li class="list-group-item text-right"><span class="pull-left">
+                <a href="{% url 'bidplacing:selling_page' %}">
+                <strong>Selling</strong></a></span>
+                <span class="badge">{{ selling_products | length }}</span>&nbsp
             </li>
             <li class="list-group-item text-right"><span class="pull-left">
                 <a href="{% url 'bidplacing:purchased_products_page' %}">
@@ -76,7 +76,7 @@
                 <span class="badge">{{ user_purchases | length }}</span>&nbsp
             </li>
               <li class="list-group-item text-right"><span class="pull-left">
-                <strong>New bids</strong></span><span class="badge">
+                <strong>New product</strong></span><span class="badge">
                 <a style="color:#ffffff" href="{% url 'bidplacing:new_product' %}">+</a>
                 </span>&nbsp
               </li>
@@ -143,8 +143,8 @@
                     </div>
                 </div>
               </div><!--/table-resp-->
-              <hr>
 
+{% comment %}
               <h4>Recent Activity</h4>
 
               <div class="table-responsive">
@@ -172,7 +172,7 @@
                   </tbody>
                 </table>
               </div>
-
+{% endcomment %}
              </div><!--/tab-pane-->
 
             <div class="tab-pane" id="selling">
@@ -199,7 +199,7 @@
 
                         <tr>
                           <td>1</td>
-                          <td><a href="{% url 'bidplacing:show_product' item.id %}">{{ item.product_name }}</a></td>
+                          <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
                           <td>{{ item.description }}</td>
                           <td>{{ item.best_bid }}</td>
                           <td>{{ item.deadline_time }}</td>
@@ -218,7 +218,7 @@
                     </div>
                 </div>
               </div><!--/table-resp-->
-
+{% comment %}
                <ul class="list-group">
                   <li class="list-group-item text-muted">Inbox</li>
                   <li class="list-group-item text-right"><a href="#" class="pull-left">Here is your a link to the latest summary report from the..</a> 2.13.2014</li>
@@ -231,7 +231,7 @@
                   <li class="list-group-item text-right"><a href="#" class="pull-left">Swedish chef is assaortor. A lobortis vitae, condimentum justo...</a> 2.11.2014</li>
 
                 </ul>
-
+{% endcomment %}
              </div><!--/tab-pane-->
              <div class="tab-pane" id="settings">
                 <form class="form" action="{% url 'bidplacing:update_profile' %}" method="post" id="registrationForm"> {% csrf_token %}
@@ -268,10 +268,8 @@
                       </div>
               	</form>
              </div>
-
               </div><!--/tab-pane-->
           </div><!--/tab-content-->
-
         </div><!--/col-9-->
     </div><!--/row-->
 {% endblock %}

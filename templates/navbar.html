@@ -75,11 +75,11 @@
 
                     <li><a href="/accounts/profile/">Your profile</a></li>
                     <li><a href="{% url 'bidplacing:new_product' %}">Sell new product</a></li>
-                    <li><a href="{% url 'bidplacing:selling_page' %}">Selling products </a></li>
-                    <li><a href="{% url 'bidplacing:purchased_products_page' %}">Purchased products </a></li>
-
+                    <li><a href="{% url 'bidplacing:selling_page' %}">Selling products</a></li>
+                    <li><a href="{% url 'bidplacing:user_purchased_products_page' %}">Your purchases</a></li>
+                    {% comment %}
                     <li class="disabled"><a href="#">[Disabled link]</a></li>
-
+                    {% endcomment %}
                     <li role="separator" class="divider"></li>
 
                     <!--<li class="dropdown-header">[Header second section]</li>-->

@@ -42,8 +42,8 @@ def main_page(request):
 # TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
     expiring_auctions = Product.get_unexpired_auctions(d=1)
     last_insertions = Product.get_last_inserts(d=1)
-# TODO : develop recommendations system
-    suggested_products = None
+    suggested_products = Product.get_suggested_products(request.user.username)
+
     context['expiring_auctions'] = expiring_auctions
     context['last_insertions'] = last_insertions
     context['suggested_products'] = suggested_products
@@ -73,6 +73,26 @@ def purchased_products_page(request):
     template = loader.get_template('purchased_products.html')
 
     return HttpResponse(template.render(context))
+
+
+@login_required
+def user_purchased_products_page(request):
+    context = retrieve_basic_info(request)
+
+    purchased_products = Product.get_purchased_products(request.user.username)
+    context['purchased_products'] = purchased_products
+
+    purchase_bids = {}
+    for p in purchased_products:
+        purchase_bids[p.id] = Bid.objects.filter(product_name=p.id)\
+            .order_by('-amount')[0]
+    print purchase_bids
+    context['purchase_bids'] = purchase_bids
+
+    template = loader.get_template('purchased_products.html')
+
+    return HttpResponse(template.render(context))
+
 
 @login_required
 def selling_products_page(request):
@@ -125,8 +145,10 @@ def profile_page(request):
 
     context['user_bids'] = Bid.get_placed_bids(request.user.username)\
         .order_by('bidding_time')[:10]
+
     context['selling_products'] = Product.get_user_products(request.user.username)\
         .order_by('-insertion_time')[:10]
+
     context['user_purchases'] = Product.get_purchased_products(
         request.user.username)
 
@@ -171,14 +193,11 @@ def product_page(request):
     seller = User.objects.get(username=product.seller)
     context['seller'] = seller
 
-    # code for left information table
-# TODO : the 3 following calls slow down the response of the page, optimize it
-    seller_products = Product.get_user_products(seller.username).__len__()
+    seller_products = Product.objects.filter(seller=seller.id)
     context['seller_products'] = seller_products
     seller_bids = Bid.objects.filter(bidder=seller.id).__len__()
     context['seller_bids'] = seller_bids
-    # TODO : develop purchased products
-    seller_purchases = 0
+    seller_purchases = Product.get_purchased_products(seller.username)
     context['seller_purchases'] = seller_purchases
 
     past_bids = product.get_past_bids()
@@ -275,23 +294,25 @@ def new_product(request):
 
     return HttpResponse(template.render(context))
 
+
 def show_product(request, product_id):
     context = retrieve_basic_info(request)
 
     product = Product.objects.get(id=product_id)
-    category = Category.objects.get(id=product.category_id)
-    seller = User.objects.get(username=product.seller)
     context['product'] = product
+
+    category = Category.objects.get(id=product.category_id)
     context['category'] = product.category
 
-
+    seller = User.objects.get(username=product.seller)
     context['seller'] = product.seller
 
     seller_bids = Bid.objects.filter(bidder=seller.id).__len__()
     context['seller_bids'] = seller_bids
-    # TODO : develop purchased products
-    seller_purchases = 0
+    seller_purchases = Product.get_purchased_products(seller.username).__len__()
     context['seller_purchases'] = seller_purchases
+    seller_products = Product.objects.filter(seller=seller.id).__len__()
+    context['seller_products'] = seller_products
 
     past_bids = product.get_past_bids()
     context['past_bids'] = past_bids

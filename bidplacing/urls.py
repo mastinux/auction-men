@@ -34,6 +34,11 @@ urlpatterns = [
     url(r'^products/purchased_products',
         views.purchased_products_page,
         name='purchased_products_page'),
+
+    url(r'^products/user_purchased_products',
+        views.user_purchased_products_page,
+        name='user_purchased_products_page'),
+
     url(r'^products/selling_products/',
         views.selling_products_page,
         name='selling_page')

@@ -61,3 +61,6 @@ target/
 
 #Pycharm
 .idea
+
+# media folder
+bidplacing/templates/product_media/

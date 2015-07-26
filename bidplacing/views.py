@@ -1,17 +1,12 @@
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.core.urlresolvers import reverse
-from django.forms import Form
-from django.http.response import HttpResponseRedirect, HttpResponseForbidden
+from django.http.response import HttpResponseRedirect
 from django.template import loader, RequestContext
 from django.http import HttpResponse
 from models import *
-from forms import BidForm, ProductForm#, ImageUploadForm
+from forms import BidForm, ProductForm
 from urllib import unquote
-from django.contrib.auth.models import User, AbstractUser# Create your views here.
-import os
-from auction_men import settings
-from PIL import Image
+from django.contrib.auth.models import User
 import pprint as pp
 
 
@@ -42,11 +37,11 @@ def retrieve_basic_info(request):
 
 def main_page(request):
     context = retrieve_basic_info(request)
-# TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
-    expiring_auctions = Product.get_unexpired_auctions(d=1)
-    last_insertions = Product.get_last_inserts(d=1)
 
+    expiring_auctions = Product.get_unexpired_auctions(d=1)
     context['expiring_auctions'] = expiring_auctions
+
+    last_insertions = Product.get_last_inserts(d=1)
     context['last_insertions'] = last_insertions
 
     if request.user.is_anonymous():
@@ -75,7 +70,6 @@ def purchased_products_page(request):
     for p in purchased_products:
         purchase_bids[p.id] = Bid.objects.filter(product_name=p.id)\
             .order_by('-amount')[0]
-    print purchase_bids
     context['purchase_bids'] = purchase_bids
 
     template = loader.get_template('purchased_products.html')
@@ -108,7 +102,6 @@ def selling_products_page(request):
 
     selling_products = Product.get_unexpired_user_products(
         request.user.username).order_by('deadline_time')
-
     context['selling_products'] = selling_products
 
     template = loader.get_template('selling_products.html')
@@ -119,12 +112,10 @@ def selling_products_page(request):
 def top_bids_page(request):
     context = retrieve_basic_info(request)
 
-    unexpired_auctions = Product.objects.filter(
-        deadline_time__gt=timezone.now())
-
-    context['top_bids'] = Bid.objects.filter(
-        product_name__in=[product.id for product in unexpired_auctions])\
-        .order_by('-amount')[:15]
+    unexpired_auctions = Product.objects.filter(deadline_time__gt=timezone.now())
+    top_bids = Bid.objects.filter(product_name__in=[product.id for product in unexpired_auctions])\
+                   .order_by('-amount')[:15]
+    context['top_bids'] = top_bids
 
     template = loader.get_template('top_bids.html')
 
@@ -172,20 +163,21 @@ def category_page(request, cat_id):
 
     category_id = cat_id
     category_object = Category.objects.get(id=category_id)
+    context['category'] = category_object
+
     category_products = category_object.get_category_product()
+    context['category_products'] = category_products
+
     children_categories = {}
     children = category_object.get_children_category()
-
-    context['category_products'] = category_products
-    context['category'] = category_object
 
     for c in children:
         cat_id = c.id
         children_categories[cat_id] = c.get_category_product()
-
     context['children_categories'] = children_categories
 
     template = loader.get_template('category.html')
+
     context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
@@ -219,16 +211,18 @@ def product_page(request):
 
     same_category_products = category.get_category_product()\
         .exclude(id=product.id)
-
     context['same_category_products'] = same_category_products
 
     template = loader.get_template('product.html')
+
     context = RequestContext(request, context)
+
     return HttpResponse(template.render(context))
 
 
 @login_required
 def place_bid(request, product_id):
+
     if request.method == 'POST':
         product = Product.objects.get(id=product_id)
         amount = request.POST['amount']
@@ -252,7 +246,6 @@ def search_page(request):
 
         categories_found = Category.objects.filter(
             category_name__icontains=searched_value)
-
         context['categories_found'] = categories_found
 
         category_products_found = {}
@@ -263,7 +256,6 @@ def search_page(request):
 
         products_found = Product.objects.filter(
             product_name__icontains=searched_value)
-
         context['products_found'] = products_found
 
     template = loader.get_template('search.html')
@@ -289,20 +281,23 @@ def update_profile(request):
 @login_required
 def new_product(request):
     form = ProductForm(request.POST, request.FILES)
+    # TODO : adding a new product the page requires field not inserted yet
+    if request.method == 'POST':
+        if form.is_valid():
+            product = form.save(commit=False)
+            product.seller = request.user
+            user_image = form.cleaned_data['product_picture']
 
-    if form.is_valid():
-        product = form.save(commit=False)
-        product.seller = request.user
-        product_picture = form.cleaned_data['product_picture']
+            next_product_id = Product.objects.all().aggregate(Max('id')).get('id__max') + 1
+            product_picture_name = str(next_product_id) + '.jpg'
 
-        next_product_id = Product.objects.all().aggregate(Max('id')).get('id__max') + 1
-        product_picture.name = str(next_product_id) + '.jpg'
-        product.product_picture = product_picture
+            product.product_picture = user_image
+            product.product_picture.name = product_picture_name
 
-        product.save()
+            product.save()
 
-        request.session['message'] = 'Product successfully added'
-        return HttpResponseRedirect('/')
+            request.session['message'] = 'Product successfully added'
+            return HttpResponseRedirect('/')
 
     template = loader.get_template('new_product.html')
     context = retrieve_basic_info(request)

@@ -16,7 +16,7 @@ class ProductAdmin(admin.ModelAdmin):
                     'insertion_time', 'deadline_time', 'seller', 'category']
     search_fields = ['product_name']
     list_filter = ('deadline_time',)
-    date_hierarchy = 'deadline_time'
+    #date_hierarchy = 'deadline_time'
 
 
 class BidAdmin(admin.ModelAdmin):

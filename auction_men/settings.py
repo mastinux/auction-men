@@ -112,7 +112,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'templates/bidplacing/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'bidplacing/templates/product_media')
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 

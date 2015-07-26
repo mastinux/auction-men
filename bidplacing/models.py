@@ -26,7 +26,7 @@ class Category(models.Model):
             return False
 
     def get_children_category(self):
-        return Category.objects.filter(parent=self.id, level=self.level+1)
+        return Category.objects.filter(parent=self.id, level=self.level + 1)
 
     def get_category_product(self):
         return Product.objects.filter(category_id=self.id, deadline_time__gt=timezone.now()).order_by('deadline_time')
@@ -41,6 +41,8 @@ class Product(models.Model):
     deadline_time = models.DateTimeField('deadline time')
     seller = models.ForeignKey(User)
     category = models.ForeignKey(Category)
+    product_picture = models.ImageField(upload_to='',
+                                        default='no-img.jpg')
 
     @property
     def best_bid(self):
@@ -91,7 +93,7 @@ class Product(models.Model):
 
         expired_auctions = Product.objects.filter(deadline_time__gt=start, deadline_time__lt=end)
 
-        product_id_list = Bid.objects.values('product_name__id').distinct()\
+        product_id_list = Bid.objects.values('product_name__id').distinct() \
             .filter(product_name__in=[product.id for product in expired_auctions])
 
         purchased_products = []
@@ -109,7 +111,7 @@ class Product(models.Model):
 
         expired_auctions = Product.objects.filter(deadline_time__lt=timezone.now())
 
-        product_id_list = Bid.objects.values('product_name__id').distinct()\
+        product_id_list = Bid.objects.values('product_name__id').distinct() \
             .filter(product_name__in=[product.id for product in expired_auctions])
 
         purchased_products = []
@@ -139,7 +141,7 @@ class Product(models.Model):
 
     @staticmethod
     def get_unexpired_ranged_products(start, end):
-        return Product.objects.filter(deadline_time__gt=timezone.now())\
+        return Product.objects.filter(deadline_time__gt=timezone.now()) \
             .filter(start_price__gte=start).exclude(start_price__gt=end)
 
     @staticmethod
@@ -151,7 +153,7 @@ class Product(models.Model):
     @staticmethod
     def get_last_inserts(m=0, h=0, d=0):
         start_time = timezone.now() - timedelta(minutes=m) - timedelta(hours=h) - timedelta(days=d)
-        return Product.objects.filter(insertion_time__gt=start_time, deadline_time__gt=timezone.now())\
+        return Product.objects.filter(insertion_time__gt=start_time, deadline_time__gt=timezone.now()) \
             .order_by('insertion_time').reverse()
 
     @staticmethod

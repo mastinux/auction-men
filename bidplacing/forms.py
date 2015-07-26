@@ -14,6 +14,7 @@ class BidForm(forms.ModelForm):
         model = Bid
         exclude = []
 
+
 class ProductForm(forms.ModelForm):
     deadline_time = forms.DateField(widget=SelectDateWidget())
 
@@ -28,7 +29,6 @@ class ProductForm(forms.ModelForm):
             raise ValidationError('deadline must be a future date')
         else:
             return deadline
-
 
     def clean_start_price(self):
         price = self.cleaned_data['start_price']

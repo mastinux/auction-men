@@ -2,13 +2,16 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from django.forms import Form
-from django.http.response import HttpResponseRedirect
+from django.http.response import HttpResponseRedirect, HttpResponseForbidden
 from django.template import loader, RequestContext
 from django.http import HttpResponse
 from models import *
-from forms import BidForm, ProductForm
+from forms import BidForm, ProductForm#, ImageUploadForm
 from urllib import unquote
 from django.contrib.auth.models import User, AbstractUser# Create your views here.
+import os
+from auction_men import settings
+from PIL import Image
 import pprint as pp
 
 
@@ -42,11 +45,16 @@ def main_page(request):
 # TODO : solve direct category page for left bar using http://getbootstrap.com/components/#btn-dropdowns-split
     expiring_auctions = Product.get_unexpired_auctions(d=1)
     last_insertions = Product.get_last_inserts(d=1)
-    suggested_products = Product.get_suggested_products(request.user.username)
 
     context['expiring_auctions'] = expiring_auctions
     context['last_insertions'] = last_insertions
-    context['suggested_products'] = suggested_products
+
+    if request.user.is_anonymous():
+        request.session['message'] = 'To bid register or log-in, please'
+    else:
+        suggested_products = Product.get_suggested_products(request.user.username)
+        context['suggested_products'] = suggested_products
+
     context['form'] = BidForm()
 
     template = loader.get_template('index.html')
@@ -161,17 +169,20 @@ def profile_page(request):
 
 def category_page(request, cat_id):
     context = retrieve_basic_info(request)
+
     category_id = cat_id
     category_object = Category.objects.get(id=category_id)
     category_products = category_object.get_category_product()
-    children = category_object.get_children_category()
     children_categories = {}
+    children = category_object.get_children_category()
+
     context['category_products'] = category_products
     context['category'] = category_object
 
     for c in children:
         cat_id = c.id
         children_categories[cat_id] = c.get_category_product()
+
     context['children_categories'] = children_categories
 
     template = loader.get_template('category.html')
@@ -277,16 +288,22 @@ def update_profile(request):
 
 @login_required
 def new_product(request):
-    form = ProductForm(request.POST or None)
+    form = ProductForm(request.POST, request.FILES)
 
     if form.is_valid():
         product = form.save(commit=False)
         product.seller = request.user
+        product_picture = form.cleaned_data['product_picture']
+
+        next_product_id = Product.objects.all().aggregate(Max('id')).get('id__max') + 1
+        product_picture.name = str(next_product_id) + '.jpg'
+        product.product_picture = product_picture
 
         product.save()
 
-        request.session['message'] = 'Product succesfully added'
+        request.session['message'] = 'Product successfully added'
         return HttpResponseRedirect('/')
+
     template = loader.get_template('new_product.html')
     context = retrieve_basic_info(request)
     context['form'] = form

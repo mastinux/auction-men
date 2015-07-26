@@ -2,6 +2,7 @@ __author__ = 'mastinux'
 
 from django.conf.urls import url
 import views
+from auction_men import settings
 
 urlpatterns = [
     url(r'^$', views.main_page, name='user'),
@@ -41,5 +42,5 @@ urlpatterns = [
 
     url(r'^products/selling_products/',
         views.selling_products_page,
-        name='selling_page')
+        name='selling_page'),
 ]

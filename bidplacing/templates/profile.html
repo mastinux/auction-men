@@ -125,11 +125,11 @@
                           <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
                           <td>{{ bid.product_name.get_best_bid }}</td>
-                          {% if '-' not in bid.product_name.get_remaining_time %}
-                            <td>{{ bid.product_name.get_remaining_time }} </td>
-                          {% else %}
-                            <td> <strong>Expired</strong> </td>
-                          {% endif %}
+                        {% if bid.product_name.get_remaining_time == None %}
+                            <td><strong>Expired</strong></td>
+                        {% else %}
+                            <td>{{ bid.product_name.get_remaining_time }}</td>
+                        {% endif %}
                         </tr>
                     {% endfor %}
                   </tbody>

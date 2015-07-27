@@ -24,7 +24,11 @@
               <td>{{ item.best_bid }}</td>
               <td>{{ item.insertion_time }}</td>
               <td>{{ item.deadline_time }}</td>
-              <td>{{ item.get_remaining_time}} </td>
+              {% if item.get_remaining_time == None %}
+                <td><strong>Sold</strong></td>
+              {% else %}
+                <td>{{ item.get_remaining_time }}</td>
+              {% endif %}
             </tr>
         {% endfor %}
     

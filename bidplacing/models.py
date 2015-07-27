@@ -125,7 +125,7 @@ class Product(models.Model):
         return purchased_products
 
     @staticmethod
-    def get_suggested_products(user):
+    def get_home_suggested_products(user):
         user_purchased_products = Product.get_purchased_products(user)
 
         category_list = Category.objects.filter(id__in=[p.category.id for p in user_purchased_products])
@@ -136,6 +136,26 @@ class Product(models.Model):
 
         if suggested_products.__len__() > 0:
             return suggested_products[0]
+        else:
+            return None
+
+    @staticmethod
+    def get_product_suggested_products(user, product_id):
+        current_user = User.objects.get(username=user)
+        current_product = Product.objects.get(id=product_id)
+
+        product_bidder = Bid.objects.all().filter(product_name=product_id).values('bidder').distinct()
+
+        suggested_products = set()
+        for p in Bid.objects.all().filter(bidder__in=[p.get('bidder') for p in product_bidder])\
+                .exclude(bidder=current_user):
+            suggested_products.add(p.product_name)
+
+        if current_product in suggested_products:
+            suggested_products.remove(current_product)
+
+        if suggested_products.__len__() > 0:
+            return suggested_products
         else:
             return None
 

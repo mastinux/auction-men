@@ -47,7 +47,7 @@ def main_page(request):
     if request.user.is_anonymous():
         request.session['message'] = 'To bid register or log-in, please'
     else:
-        suggested_products = Product.get_suggested_products(request.user.username)
+        suggested_products = Product.get_home_suggested_products(request.user.username)
         context['suggested_products'] = suggested_products
 
     context['form'] = BidForm()
@@ -88,7 +88,7 @@ def user_purchased_products_page(request):
     for p in purchased_products:
         purchase_bids[p.id] = Bid.objects.filter(product_name=p.id)\
             .order_by('-amount')[0]
-    print purchase_bids
+
     context['purchase_bids'] = purchase_bids
 
     template = loader.get_template('purchased_products.html')
@@ -334,8 +334,10 @@ def show_product(request, product_id):
 
     same_category_products = category.get_category_product().exclude(
         id=product.id)
-
     context['same_category_products'] = same_category_products
+
+    suggested_products = Product.get_product_suggested_products(request.user.username, product.id)
+    context['suggested_products'] = suggested_products
 
     template = loader.get_template('product.html')
     context = RequestContext(request, context)

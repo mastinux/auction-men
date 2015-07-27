@@ -40,7 +40,7 @@
                             <img src="//placehold.it/150x150" class="img"/>
                         </div>
                        <br><br><br>
-                        {% if user.is_authenticated and user.username != product.seller.username %}
+                        {% if user.is_authenticated and user.username != product.seller.username and product.get_remaining_time != None%}
                             <div class="col-md-7">
                                 <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
                                 {% csrf_token %}
@@ -88,10 +88,22 @@
             </div>
         </div><!--/col-row-->
 
+        <hr>
+        <div class="row">
+            {% if suggested_products %}
+                <h1>Bidder who bade for this product also bade for these</h1>
+                <hr>
+                {% for item in suggested_products|slice:":" %}
+                    {% include 'product_card.html' with product=item %}
+                {% endfor %}
+            {% endif %}
+        </div>
+
         <div class="row">
             <hr>
             {% if same_category_products %}
-              <h1>Related product</h1>
+              <h1>Related product to category <a href="{% url 'bidplacing:show_category' category.id %}">
+                  {{ category.category_name }}</a></h1>
               <hr>
               {% for item in same_category_products %}
                  {% include 'product_card.html' with product=item %}

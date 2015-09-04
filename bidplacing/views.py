@@ -39,10 +39,10 @@ def main_page(request):
     context = retrieve_basic_info(request)
 
     expiring_auctions = Product.get_unexpired_auctions(d=1)
-    context['expiring_auctions'] = expiring_auctions
+    context['expiring_auctions'] = expiring_auctions.exclude(seller=request.user.id)
 
     last_insertions = Product.get_last_inserts(d=1)
-    context['last_insertions'] = last_insertions
+    context['last_insertions'] = last_insertions.exclude(seller=request.user.id)
 
     if request.user.is_anonymous():
         request.session['message'] = 'To bid register or log-in, please'
@@ -334,10 +334,11 @@ def show_product(request, product_id):
 
     same_category_products = category.get_category_product().exclude(
         id=product.id)
-    context['same_category_products'] = same_category_products
+    context['same_category_products'] = same_category_products.exclude(seller=request.user.id)
 
-    suggested_products = Product.get_product_suggested_products(request.user.username, product.id)
-    context['suggested_products'] = suggested_products
+    if request.user.is_authenticated():
+        suggested_products = Product.get_product_suggested_products(request.user.id, product.id)
+        context['suggested_products'] = suggested_products
 
     template = loader.get_template('product.html')
     context = RequestContext(request, context)

@@ -140,8 +140,8 @@ class Product(models.Model):
             return None
 
     @staticmethod
-    def get_product_suggested_products(user, product_id):
-        current_user = User.objects.get(username=user)
+    def get_product_suggested_products(user_id, product_id):
+        current_user = User.objects.get(id=user_id)
         current_product = Product.objects.get(id=product_id)
 
         product_bidder = Bid.objects.all().filter(product_name=product_id).values('bidder').distinct()
@@ -149,7 +149,9 @@ class Product(models.Model):
         suggested_products = set()
         for p in Bid.objects.all().filter(bidder__in=[p.get('bidder') for p in product_bidder])\
                 .exclude(bidder=current_user):
-            suggested_products.add(p.product_name)
+            if p.product_name.deadline_time.__gt__(timezone.now())\
+                    and p.product_name.seller.id != user_id:
+                suggested_products.add(p.product_name)
 
         if current_product in suggested_products:
             suggested_products.remove(current_product)
@@ -187,9 +189,15 @@ class Product(models.Model):
     def get_past_bids(self):
         return Bid.objects.filter(product_name=self.id).order_by('bidding_time')
 
+    def get_best_bidder(self):
+        product = Product.objects.get(id=self.id)
+        last_product_bid = product.bid_set.all().order_by('bidding_time').reverse()[0]
+        return last_product_bid.bidder
+
     def get_best_bid(self):
-        product = Product.objects.get(product_name=self.product_name,
-                                      deadline_time=self.deadline_time, seller=self.seller)
+#        product = Product.objects.get(product_name=self.product_name,
+#                                      deadline_time=self.deadline_time, seller=self.seller)
+        product = Product.objects.get(id=self.id)
         max_bid = product.bid_set.all().aggregate(Max('amount'))
         if max_bid.get('amount__max') is None:
             return self.start_price

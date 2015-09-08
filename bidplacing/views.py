@@ -8,6 +8,7 @@ from forms import BidForm, ProductForm
 from urllib import unquote
 from django.contrib.auth.models import User
 import pprint as pp
+from django.shortcuts import render
 
 
 def retrieve_basic_info(request):
@@ -280,31 +281,29 @@ def update_profile(request):
 
 @login_required
 def new_product(request):
-    form = ProductForm(request.POST, request.FILES)
-    # TODO : adding a new product the page requires field not inserted yet
+
+    # if this is a POST request we need to process the form data
     if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = ProductForm(request.POST, request.FILES)
+        # check whether it's valid:
         if form.is_valid():
+            # process the data in form.cleaned_data as required
             product = form.save(commit=False)
             product.seller = request.user
-            user_image = form.cleaned_data['product_picture']
-
-            next_product_id = Product.objects.all().aggregate(Max('id')).get('id__max') + 1
-            product_picture_name = str(next_product_id) + '.jpg'
-
-            product.product_picture = user_image
-            product.product_picture.name = product_picture_name
-
             product.save()
 
+            # redirect to a new URL:
             request.session['message'] = 'Product successfully added'
             return HttpResponseRedirect('/')
 
-    template = loader.get_template('new_product.html')
-    context = retrieve_basic_info(request)
-    context['form'] = form
-    context = RequestContext(request, context)
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ProductForm()
+        context = retrieve_basic_info(request)
+        context['form'] = form
 
-    return HttpResponse(template.render(context))
+    return render(request, 'new_product.html', context)
 
 
 def show_product(request, product_id):

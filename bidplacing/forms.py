@@ -16,7 +16,8 @@ class BidForm(forms.ModelForm):
 
 
 class ProductForm(forms.ModelForm):
-    deadline_time = forms.DateField(widget=SelectDateWidget())
+    initial_date = datetime.date.today() + datetime.timedelta(days=1)
+    deadline_time = forms.DateField(widget=SelectDateWidget, initial=initial_date)
 
     class Meta:
         model = Product
@@ -33,6 +34,6 @@ class ProductForm(forms.ModelForm):
     def clean_start_price(self):
         price = self.cleaned_data['start_price']
         if price < 0:
-            raise ValidationError('Start price must ne positive')
+            raise ValidationError('Start price must be positive')
         else:
             return price

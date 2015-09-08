@@ -44,7 +44,7 @@ def main_page(request):
     last_insertions = Product.get_last_inserts(d=1)
     context['last_insertions'] = last_insertions.exclude(seller=request.user.id)
 
-    if request.user.is_anonymous():
+    if not request.user.is_authenticated():
         request.session['message'] = 'To bid register or log-in, please'
     else:
         suggested_products = Product.get_home_suggested_products(request.user.username)

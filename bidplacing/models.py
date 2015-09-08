@@ -4,7 +4,6 @@ from django.utils import timezone
 from django.db.models import Max, Min, Count, F
 from datetime import timedelta, datetime, time
 
-
 # category data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
 class Category(models.Model):
     category_name = models.CharField(max_length=255, unique=True, null=False)

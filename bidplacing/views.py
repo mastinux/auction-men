@@ -9,6 +9,9 @@ from urllib import unquote
 from django.contrib.auth.models import User
 import pprint as pp
 from django.shortcuts import render
+from PIL import Image
+from auction_men import settings
+from os import path
 
 
 def retrieve_basic_info(request):
@@ -281,7 +284,6 @@ def update_profile(request):
 
 @login_required
 def new_product(request):
-
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -296,14 +298,14 @@ def new_product(request):
             # redirect to a new URL:
             request.session['message'] = 'Product successfully added'
             return HttpResponseRedirect('/')
-
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = ProductForm()
         context = retrieve_basic_info(request)
+        form = ProductForm()
         context['form'] = form
+        return render(request, 'new_product.html', context)
 
-    return render(request, 'new_product.html', context)
+    return render(request, 'new_product.html', {'form': form})
 
 
 def show_product(request, product_id):

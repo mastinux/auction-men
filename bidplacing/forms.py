@@ -18,6 +18,7 @@ class BidForm(forms.ModelForm):
 class ProductForm(forms.ModelForm):
     initial_date = datetime.date.today() + datetime.timedelta(days=1)
     deadline_time = forms.DateField(widget=SelectDateWidget, initial=initial_date)
+    start_price = forms.FloatField(widget=forms.NumberInput(attrs={"step": "0.01"}))
 
     class Meta:
         model = Product

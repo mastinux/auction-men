@@ -55,7 +55,7 @@
                                     </div>
                                 </form>
                                 {% else %}
-                                    You now are the best bidder
+                                    <h3><span class="label label-success">You are the best bidder</span></h3>
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -75,10 +75,22 @@
                         <h4><strong>Expired</strong></h4>
                         <h4>Purchase time : {{ product.deadline_time }}</h4>
                     {% else %}
+                        <br>
+                        <!-- PORCA LA MADOMPA -->
+                        <h4><span id="currentCountdown" class="countdown"></span></h4>
+                        <script>
+                            var expiringTime = new Date();
+                            console.log(expiringTime);
+                            expiringTime.setSeconds(expiringTime.getSeconds() + {{ product.get_remaining_time.seconds }});
+                            console.log(expiringTime);
+                            $('#currentCountdown').countdown({until: expiringTime, format: 'HMS'});
+                        </script>
+                        {% comment %}
                         <h4>Remaining time : {{ product.get_remaining_time }}</h4>
                         <h4>Deadline time : {{ product.deadline_time }}</h4>
+                        {% endcomment %}
                     {% endif %}
-                    <hr>
+                    <hr><hr>
                     <h4>Seller : {{ product.seller | capfirst}}</h4>
                     <h4>{{ product.seller | capfirst}}'s products : {{ seller_products }}</h4>
                     <h4>{{ product.seller | capfirst}}'s bids : {{ seller_bids }}</h4>

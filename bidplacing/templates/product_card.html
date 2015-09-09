@@ -5,7 +5,8 @@
             <h4><a href="{% url 'bidplacing:show_product' product.id %}">{{ product.product_name | capfirst}}</a></h4>
         </div>
         <div class="panel-body">
-            <img src="//placehold.it/150x150" class="img-circle center-block">
+            <!-- <img src="//placehold.it/150x150" class="img-circle center-block"> -->
+            <img src="{{ MEDIA_URL }}{{ product.product_picture }}" class="img-circle center-block"/>
             <div class="clearfix"></div>
             <hr>
             {% comment %}

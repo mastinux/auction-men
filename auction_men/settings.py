@@ -70,6 +70,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                "django.core.context_processors.media",
+                "django.core.context_processors.static",
             ],
         },
     },
@@ -112,13 +114,15 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'bidplacing/templates/product_media')
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'bower_components'),
 )
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'bidplacing/templates/media/')
+
+MEDIA_URL = '/bidplacing/media/'
 
 #crispy-settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'

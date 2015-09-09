@@ -7,13 +7,13 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('bidplacing', '0011_auto_20150717_1528'),
+        ('bidplacing', '0012_product_product_picture'),
     ]
 
     operations = [
-        migrations.AddField(
+        migrations.AlterField(
             model_name='product',
             name='product_picture',
-            field=models.ImageField(default=b'bidplacing/templates/media/no-img.jpg', upload_to=b'bidplacing/templates/media/'),
+            field=models.ImageField(default=b'no-img.jpg', upload_to=b''),
         ),
     ]

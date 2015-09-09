@@ -1,5 +1,6 @@
 from django.conf.urls import include, url, patterns
 from django.contrib import admin
+from auction_men import settings
 
 urlpatterns = [
     # Examples:
@@ -22,3 +23,9 @@ urlpatterns = [
     #url(r'^place-bid/', 'bidplacing.views.place_bid', name='place_bid'),
     #url(r'^search/', 'bidplacing.views.search_page', name='search_page')
 ]
+if settings.DEBUG:
+    # With this you can serve the static media from Django when DEBUG=True (when you are on local computer)
+    # but you can let your web server configuration serve static media when you go to production and DEBUG=False
+    # static files (images, css, javascript, etc.)
+    urlpatterns += patterns('', (r'^bidplacing/media/(?P<path>.*)$', 'django.views.static.serve',
+                                 {'document_root': settings.MEDIA_ROOT}))

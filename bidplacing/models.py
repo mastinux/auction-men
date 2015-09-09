@@ -3,6 +3,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db.models import Max, Min, Count, F
 from datetime import timedelta, datetime, time
+from PIL import Image
+from auction_men import settings
+import os
+
 
 # category data source: http://www.amazon.com/gp/site-directory/ref=nav_shopall_btn
 class Category(models.Model):
@@ -62,6 +66,25 @@ class Product(models.Model):
         self.deadline_time = datetime.combine(
             self.deadline_time, time(hour, m))
         super(Product, self).save(*args, **kwargs)
+
+        if self.product_picture:
+            print "\n resizing picture \n"
+            image = Image.open(self.product_picture)
+            (width, height) = image.size
+
+            '''Max width and height 150'''
+            if width / 150 < height / 150:
+                factor = height / 150
+            else:
+                factor = width / 150
+
+            print "width: ", width
+            print "height: ", height
+            print "factor: ", factor
+            size = (width / factor, height / factor)
+            image = image.resize(size, Image.ANTIALIAS)
+            image.save(self.product_picture.path)
+            print "\n picture resized\n"
 
     def get_remaining_time(self):
         remaining_time = self.deadline_time - timezone.now()

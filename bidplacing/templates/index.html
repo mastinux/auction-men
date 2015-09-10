@@ -21,17 +21,35 @@
 {% endblock %}
 
 {% block content %}
+
+{% if user.is_authenticated  and expiring_auctions %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row row-horizon">
+
+                    <h1>Expiring auctions</h1>
+                    <hr>
+                    {% for item in expiring_auctions %}
+                        {% include 'product_card.html' with product=item %}
+                    {% endfor %}
+            </div>
+        </div>
+    </div>
+{% endif %}
+
+<!-- TEST DIV-->
+<h1>Last insertions</h1>
+<hr>
 <div class="row">
     <div class="col-md-12">
-        {% if user.is_authenticated %}
-            <h1>Expiring auctions</h1>
-            <hr>
-            {% for item in expiring_auctions %}
+        <div class="row row-horizon">
+            {% for item in last_insertions %}
                 {% include 'product_card.html' with product=item %}
             {% endfor %}
-        {% endif %}
+        </div>
     </div>
 </div>
+{% comment %}
 <div class="row">
     <div class="col-md-12">
         <h1>Last insertions</h1>
@@ -41,17 +59,18 @@
         {% endfor %}
     </div>
 </div>
-
-<div class="row">
-    <div class="col-md-12">
-    {% if user.is_authenticated %}
-        <h1>Recommended for you</h1>
-        <hr>
-        {% for item in suggested_products %}
-            {% include 'product_card.html' with product=item %}
-        {% endfor %}
-    {% endif %}
-    </div>
-</div>
+{% endcomment %}
+{% if user.is_authenticated  and suggested_products %}
+    <h1>Recommended for you</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row row-horizon">
+                {% for item in suggested_products %}
+                    {% include 'product_card.html' with product=item %}
+                {% endfor %}
+            </div>
+        </div>
+{% endif %}
 
 {% endblock %}

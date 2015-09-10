@@ -63,4 +63,4 @@ target/
 .idea
 
 # media folder
-bidplacing/templates/product_media/*
+bidplacing/templates/media/*

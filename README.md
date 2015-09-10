@@ -6,3 +6,6 @@
 
     python manage.py collectstatic
     
+## install bootstrap-horizon
+
+    bower install bootstrap-horizon

@@ -21,8 +21,7 @@
 {% block content %}
     <div>
         <br>
-        {% if user.is_authenticated %}
-        {% else %}
+        {% if not user.is_authenticated %}
             Hello, to see more contents please sign up!
         {% endif %}
     </div>
@@ -69,7 +68,7 @@
                 <span class="badge">{{ selling_products | length }}</span>&nbsp
             </li>
             <li class="list-group-item text-right"><span class="pull-left">
-                <a href="{% url 'bidplacing:purchased_products_page' %}">
+                <a href="{% url 'bidplacing:user_purchased_products_page' %}">
                     <strong>Purchase History</strong>
                 </a>
                 </span>
@@ -105,7 +104,9 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
+                        {% comment %}
                       <th>#</th>
+                        {% endcomment %}
                       <th>Product</th>
                       <th>Seller</th>
                       <th>Start price</th>
@@ -117,18 +118,39 @@
                   <tbody id="items">
 
                   {% for bid in user_bids %}
-                         <tr>
+                      {% if bid.product_name.get_remaining_time == None and bid.amount == bid.product_name.get_best_bid%}
+                          <tr class="alert-info">
+                      {% elif bid.product_name.get_remaining_time == None %}
+                          <tr class="alert-warning">
+                      {% elif bid.amount == bid.product_name.get_best_bid %}
+                          <tr class="alert-success">
+                      {% else %}
+                          <tr class="alert-danger">
+                      {% endif %}
+                         {% comment %}
                           <td>{{ forloop.counter }}</td>
+                         {% endcomment %}
                           <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000">
                               {{ bid.product_name.product_name }}</a></td>
                           <td>{{ bid.product_name.seller }}</td>
                           <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
                           <td>{{ bid.product_name.get_best_bid }}</td>
-                        {% if bid.product_name.get_remaining_time == None %}
-                            <td><strong>Expired</strong></td>
+                        {% if bid.product_name.get_remaining_time == None and bid.amount == bid.product_name.get_best_bid%}
+                            <td><strong>Purchased</strong></td>
+                        {% elif bid.product_name.get_remaining_time == None %}
+                            <td><strong>Not     Purchased</strong></td>
                         {% else %}
-                            <td>{{ bid.product_name.get_remaining_time }}</td>
+                            <td>
+                                <div id="countdonw-{{ bid.product_name.id }}" class="countdown"></div>
+                                <script>
+                                    var expiringTime = new Date();
+                                    var tagName = "#countdonw-" + {{ bid.product_name.id }};
+                                    expiringTime.setDate(expiringTime.getDate() + {{ bid.product_name.get_remaining_time.days }})
+                                    expiringTime.setSeconds(expiringTime.getSeconds() + {{ bid.product_name.get_remaining_time.seconds }})
+                                    $(tagName).countdown({until: expiringTime});
+                                </script>
+                            </td>
                         {% endif %}
                         </tr>
                     {% endfor %}
@@ -185,7 +207,9 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
+                      {% comment %}
                       <th>#</th>
+                      {% endcomment %}
                       <th>Product</th>
                       <th>Description</th>
                       <th>Purchase Price</th>
@@ -197,12 +221,14 @@
 
                     {% for item in user_purchases %}
 
-                        <tr>
+                        <tr class="alert-info">
+                        {% comment %}
                           <td>1</td>
+                        {% endcomment %}
                           <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
                           <td>{{ item.description }}</td>
                           <td>{{ item.best_bid }}</td>
-                          <td>{{ item.deadline_time }}</td>
+                          <td>{{ item.deadline_time.date }}</td>
                           <td>{{ item.seller }}</td>
                         </tr>
                     {% endfor %}

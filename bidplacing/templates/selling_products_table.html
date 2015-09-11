@@ -2,13 +2,19 @@
     <table class="table table-hover table-bordered">
       <thead>
         <tr>
+          {% comment %}
           <th>#</th>
+          {% endcomment %}
           <th>Product</th>
+            {% comment %}
           <th>Description</th>
+            {% endcomment %}
           <th>Start price</th>
           <th>Current Price</th>
           <th>Insertion time</th>
+          {% comment %}
           <th>Deadline time</th>
+          {% endcomment %}
           <th>Time left </th>
         </tr>
       </thead>
@@ -16,18 +22,39 @@
     
         {% for item in user_selling %}
     
-            <tr>
+            {% if item.get_remaining_time == None %}
+                <tr class="alert-info">
+            {% elif item.start_price == item.get_best_bid %}
+                <tr class="alert-warning">
+            {% else%}
+                <tr class="alert-success">
+            {% endif %}
+              {% comment %}
               <td>{{ forloop.counter}}</td>
+              {% endcomment %}
               <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
+              {% comment %}
               <td>{{ item.description }}</td>
+              {% endcomment %}
               <td>{{ item.start_price }}</td>
               <td>{{ item.best_bid }}</td>
-              <td>{{ item.insertion_time }}</td>
+              <td>{{ item.insertion_time.date }}</td>
+              {% comment %}
               <td>{{ item.deadline_time }}</td>
+              {% endcomment %}
               {% if item.get_remaining_time == None %}
                 <td><strong>Sold</strong></td>
               {% else %}
-                <td>{{ item.get_remaining_time }}</td>
+                 <td>
+                    <div id="countdonw-{{ item.id }}" class="countdown"></div>
+                        <script>
+                            var expiringTime = new Date();
+                            var tagName = "#countdonw-" + {{ item.id }};
+                            expiringTime.setDate(expiringTime.getDate() + {{ item.get_remaining_time.days }})
+                            expiringTime.setSeconds(expiringTime.getSeconds() + {{ item.get_remaining_time.seconds }})
+                            $(tagName).countdown({until: expiringTime});
+                        </script>
+                </td>
               {% endif %}
             </tr>
         {% endfor %}

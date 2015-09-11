@@ -43,7 +43,9 @@
                       <th>Start price</th>
                       <th>User's bid </th>
                       <th>Best bids</th>
+                      {% comment %}
                       <th>Time left </th>
+                      {% endcomment%}
                     </tr>
                   </thead>
                   <tbody id="items">
@@ -58,7 +60,20 @@
                           <td>{{ bid.product_name.start_price }}</td>
                           <td>{{ bid.amount }}</td>
                           <td>{{ bid.product_name.get_best_bid }}</td>
-                          <td>{{ bid.product_name.get_remaining_time }}</td>
+                          {% comment %}
+                          <td>
+                            <div id="countdonw-{{ bid.product_name.id }}" class="countdown"></div>
+                            <script>
+                                var expiringTime = new Date();
+                                var tagName = "#countdonw-" + {{ bid.product_name.id }};
+                                console.log(expiringTime);
+                                expiringTime.setSeconds(expiringTime.getSeconds()
+                                    + {{ bid.product_name.get_remaining_time.seconds }});
+                                console.log(expiringTime);
+                                $(tagName).countdown({until: expiringTime, format: 'HMS'});
+                            </script>
+                          </td>
+                          {% endcomment %}
                         </tr>
                     {% endfor %}
                   </tbody>

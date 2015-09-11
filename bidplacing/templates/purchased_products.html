@@ -20,8 +20,7 @@
 
 {% block content %}
     <div>
-        {% if user.is_authenticated %}
-        {% else %}
+        {% if not user.is_authenticated %}
             Hello, to see more contents please sign up!
         {% endif %}
     </div>
@@ -48,7 +47,7 @@
                   <tbody id="items">
 
                   {% for item in purchased_products %}
-                         <tr>
+                         <tr class="alert-info">
                           <td>{{ forloop.counter }}</td>
                           <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">
                               {{ item.product_name }}</a></td>
@@ -60,7 +59,7 @@
                                         <td>{{ bid.amount }}</td>
                                     {% endif %}
                               {% endfor %}
-                          <td>{{ item.deadline_time }} </td>
+                          <td>{{ item.deadline_time.date }} </td>
                         </tr>
                     {% endfor %}
                   </tbody>

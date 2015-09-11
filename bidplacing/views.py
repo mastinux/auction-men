@@ -149,7 +149,7 @@ def profile_page(request):
     context = retrieve_basic_info(request)
 
     context['user_bids'] = Bid.get_placed_bids(request.user.username)\
-        .order_by('bidding_time')[:10]
+        .order_by('bidding_time')#[:10]
 
     context['selling_products'] = Product.get_user_products(request.user.username)\
         .order_by('-insertion_time')[:10]

@@ -218,8 +218,6 @@ class Product(models.Model):
         return last_product_bid.bidder
 
     def get_best_bid(self):
-#        product = Product.objects.get(product_name=self.product_name,
-#                                      deadline_time=self.deadline_time, seller=self.seller)
         product = Product.objects.get(id=self.id)
         max_bid = product.bid_set.all().aggregate(Max('amount'))
         if max_bid.get('amount__max') is None:
@@ -259,6 +257,9 @@ class Bid(models.Model):
     @staticmethod
     def get_placed_bids(username):
         user = User.objects.get(username=username)
+
+        #TODO: deve ritornare l ultima offerta per ogni asta a cui si e' partecipato
+
         return Bid.objects.filter(bidder=user)
 
     @staticmethod

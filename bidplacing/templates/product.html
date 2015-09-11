@@ -46,10 +46,10 @@
                             <img src="{{ MEDIA_URL }}{{ product.product_picture }}" class="img"/>
                         </div>
                        <br><br><br>
-                        {% if user.is_authenticated and product.get_remaining_time != None%}
+                        {% if user.is_authenticated and product.get_remaining_time != None %}
                             <div class="col-md-7">
                                 {% if user.id == product.seller.id %}
-                                    <h3><span class="label label-info">Almost yours!</span></h3>
+                                    <h3><span class="label label-info">Yet your!</span></h3>
                                 {% elif user.id == product.get_best_bidder.id %}
                                     <h3><span class="label label-success">You are the best bidder</span></h3>
                                 {% else %}
@@ -88,10 +88,9 @@
                         <h4><span id="currentCountdown" class="countdown"></span></h4>
                         <script>
                             var expiringTime = new Date();
-                            console.log(expiringTime);
-                            expiringTime.setSeconds(expiringTime.getSeconds() + {{ product.get_remaining_time.seconds }});
-                            console.log(expiringTime);
-                            $('#currentCountdown').countdown({until: expiringTime, format: 'HMS'});
+                            expiringTime.setDate(expiringTime.getDate() + {{ product.get_remaining_time.days }})
+                            expiringTime.setSeconds(expiringTime.getSeconds() + {{ product.get_remaining_time.seconds }})
+                            $('#currentCountdown').countdown({until: expiringTime});
                         </script>
                         {% comment %}
                         <h4>Remaining time : {{ product.get_remaining_time }}</h4>

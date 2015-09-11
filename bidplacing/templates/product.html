@@ -49,7 +49,7 @@
                         {% if user.is_authenticated and product.get_remaining_time != None%}
                             <div class="col-md-7">
                                 {% if user.id == product.seller.id %}
-                                    <h3><span class="label label-info">This is yours</span></h3>
+                                    <h3><span class="label label-info">Almost yours!</span></h3>
                                 {% elif user.id == product.get_best_bidder.id %}
                                     <h3><span class="label label-success">You are the best bidder</span></h3>
                                 {% else %}
@@ -98,7 +98,7 @@
                         <h4>Deadline time : {{ product.deadline_time }}</h4>
                         {% endcomment %}
                     {% endif %}
-                    <hr><hr>
+                    <hr>
                     <h4>Seller : {{ product.seller | capfirst}}</h4>
                     <h4>{{ product.seller | capfirst}}'s products : {{ seller_products }}</h4>
                     <h4>{{ product.seller | capfirst}}'s bids : {{ seller_bids }}</h4>
@@ -112,29 +112,31 @@
             </div>
         </div><!--/col-row-->
 
-        <hr>
         <div class="row">
             {% if suggested_products %}
+                <hr>
                 <h1>Bidder who bade for this product also bade for these</h1>
                 <hr>
-                {% for item in suggested_products|slice:":" %}
-                    {% include 'product_card.html' with product=item %}
-                {% endfor %}
+                <div class="row row-horizon">
+                    {% for item in suggested_products|slice:":" %}
+                        {% include 'product_card.html' with product=item %}
+                    {% endfor %}
+                </div>
             {% endif %}
         </div>
 
         <div class="row">
-            <hr>
             {% if same_category_products %}
-              <h1>Related product to category <a href="{% url 'bidplacing:show_category' category.id %}">
+                <hr>
+                <h1>Related product to category <a href="{% url 'bidplacing:show_category' category.id %}">
                   {{ category.category_name }}</a></h1>
-              <hr>
+                <hr>
 
-            <div class="row row-horizon">
-              {% for item in same_category_products %}
-                 {% include 'product_card.html' with product=item %}
-              {% endfor %}
-            </div>
+                <div class="row row-horizon">
+                  {% for item in same_category_products %}
+                     {% include 'product_card.html' with product=item %}
+                  {% endfor %}
+                </div>
 
             {% endif %}
         </div>

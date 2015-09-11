@@ -152,12 +152,17 @@ class Product(models.Model):
 
         category_list = Category.objects.filter(id__in=[p.category.id for p in user_purchased_products])
 
+        print "\n products \n"
         suggested_products = []
         for c in category_list:
-            suggested_products.append(c.get_category_product()[:4])
+            for partial_product in c.get_category_product()[:4]:
+                suggested_products.append(partial_product)
+
+        for p in suggested_products:
+            print p
 
         if suggested_products.__len__() > 0:
-            return suggested_products[0]
+            return suggested_products
         else:
             return None
 

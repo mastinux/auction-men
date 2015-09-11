@@ -148,18 +148,14 @@ class Product(models.Model):
 
     @staticmethod
     def get_home_suggested_products(user):
-        user_purchased_products = Product.get_purchased_products(user)
+        user_purchased_products = Product.get_purchased_products(user.username)
 
         category_list = Category.objects.filter(id__in=[p.category.id for p in user_purchased_products])
 
-        print "\n products \n"
         suggested_products = []
         for c in category_list:
-            for partial_product in c.get_category_product()[:4]:
+            for partial_product in c.get_category_product().exclude(seller=user.id)[:4]:
                 suggested_products.append(partial_product)
-
-        for p in suggested_products:
-            print p
 
         if suggested_products.__len__() > 0:
             return suggested_products

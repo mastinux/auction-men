@@ -53,7 +53,7 @@ def main_page(request):
     if not request.user.is_authenticated():
         request.session['message'] = 'To bid register or log-in, please'
     else:
-        suggested_products = Product.get_home_suggested_products(request.user.username)
+        suggested_products = Product.get_home_suggested_products(request.user)
         context['suggested_products'] = suggested_products
 
     context['form'] = BidForm()

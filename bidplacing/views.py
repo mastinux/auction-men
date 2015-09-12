@@ -68,7 +68,7 @@ def main_page(request):
 def purchased_products_page(request):
     context = retrieve_basic_info(request)
 
-    purchased_products = Product.get_recent_purchased_products(d=1)
+    purchased_products = Product.get_recent_purchased_products(d=2)
     context['purchased_products'] = purchased_products
 
     purchase_bids = {}

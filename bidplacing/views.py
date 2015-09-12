@@ -41,7 +41,6 @@ def retrieve_basic_info(request):
 
 def main_page(request):
 
-    print "\n processing home page \n"
     context = retrieve_basic_info(request)
 
     expiring_auctions = Product.get_unexpired_auctions(d=1)

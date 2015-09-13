@@ -258,9 +258,16 @@ class Bid(models.Model):
     def get_placed_bids(username):
         user = User.objects.get(username=username)
 
-        #TODO: deve ritornare l ultima offerta per ogni asta a cui si e' partecipato
+        user_bids = Bid.objects.filter(bidder=user)
 
-        return Bid.objects.filter(bidder=user)
+        products = set([ub.product_name for ub in user_bids])
+
+        last_bids = list()
+        for p in products:
+            product_bids = Bid.objects.filter(bidder=user, product_name=p.id).order_by('-bidding_time')
+            last_bids.append(product_bids[0])
+
+        return last_bids
 
     @staticmethod
     def get_expired_placed_bids(username):

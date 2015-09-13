@@ -264,6 +264,7 @@ def search_page(request):
         context['products_found'] = products_found
 
     template = loader.get_template('search.html')
+    context = RequestContext(request, context)
 
     return HttpResponse(template.render(context))
 

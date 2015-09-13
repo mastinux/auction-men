@@ -38,17 +38,19 @@
 {% endif %}
 
 <!-- TEST DIV-->
-<h1>Last insertions</h1>
-<hr>
-<div class="row">
-    <div class="col-md-12">
-        <div class="row row-horizon">
-            {% for item in last_insertions %}
-                {% include 'product_card.html' with product=item %}
-            {% endfor %}
+{% if last_insertions  %}
+    <h1>Last insertions</h1>
+    <hr>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="row row-horizon">
+                {% for item in last_insertions %}
+                    {% include 'product_card.html' with product=item %}
+                {% endfor %}
+            </div>
         </div>
     </div>
-</div>
+{% endif %}
 {% comment %}
 <div class="row">
     <div class="col-md-12">

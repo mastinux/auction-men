@@ -26,7 +26,7 @@
 
         <div class="row">
             {% if products_found %}
-                <h2>Products related to {{ searched_value }}</h2>
+                <h2>Products/Services related to {{ searched_value }}</h2>
                 <hr>
                     <div class="row row-horizon">
                         {% for item in products_found %}
@@ -43,7 +43,7 @@
 
         <div class="row">
             {% if categories_found %}
-                <h1>Products found in categories related to {{ searched_value }}</h1>
+                <h1>Products/Services found in categories related to {{ searched_value }}</h1>
                 <hr>
                 {% for category in categories_found %}
                         <h2>Category:  <a href="{% url 'bidplacing:show_category' category.id %}">

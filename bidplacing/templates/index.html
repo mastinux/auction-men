@@ -23,12 +23,11 @@
 {% block content %}
 
 {% if user.is_authenticated  and expiring_auctions %}
+    <h1>Expiring auctions</h1>
+    <hr>
     <div class="row">
         <div class="col-md-12">
             <div class="row row-horizon">
-
-                    <h1>Expiring auctions</h1>
-                    <hr>
                     {% for item in expiring_auctions %}
                         {% include 'product_card.html' with product=item %}
                     {% endfor %}

@@ -36,7 +36,13 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    # TODO : add a field to know if product is a product or a service
+    PRODUCT = 'pr'
+    SERVICE = 'sr'
+    OBJECT_CHOICES = (
+        (PRODUCT, 'Product'),
+        (SERVICE, 'Service'),
+    )
+    object_type = models.CharField(max_length=2, choices=OBJECT_CHOICES, default=PRODUCT)
     product_name = models.CharField(max_length=100, blank=False, null=False)
     description = models.CharField(max_length=500, blank=True)
     start_price = models.FloatField()
@@ -46,6 +52,12 @@ class Product(models.Model):
     category = models.ForeignKey(Category)
     product_picture = models.ImageField(upload_to='',
                                         default='no-img.jpg')
+
+    def is_product(self):
+        if self.object_type == 'pr':
+            return True
+        else:
+            return False
 
     @property
     def best_bid(self):

@@ -2,10 +2,8 @@
     <table class="table table-hover table-bordered">
       <thead>
         <tr>
-          {% comment %}
-          <th>#</th>
-          {% endcomment %}
-          <th>Product</th>
+          <th>Type</th>
+          <th>Name</th>
             {% comment %}
           <th>Description</th>
             {% endcomment %}
@@ -29,9 +27,7 @@
             {% else%}
                 <tr class="alert-success">
             {% endif %}
-              {% comment %}
-              <td>{{ forloop.counter}}</td>
-              {% endcomment %}
+              <td>{{ item.get_object_type_display }}</td>
               <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
               {% comment %}
               <td>{{ item.description }}</td>

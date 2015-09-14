@@ -104,13 +104,12 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
-                        {% comment %}
-                      <th>#</th>
-                        {% endcomment %}
-                      <th>Product</th>
+
+                      <th>Type</th>
+                      <th>Name</th>
                       <th>Seller</th>
                       <th>Start price</th>
-                      <th>Your bids </th>
+                      <th>Your bid</th>
                       <th>Best bids</th>
                       <th>Time left </th>
                     </tr>
@@ -127,9 +126,7 @@
                       {% else %}
                           <tr class="alert-danger">
                       {% endif %}
-                         {% comment %}
-                          <td>{{ forloop.counter }}</td>
-                         {% endcomment %}
+                          <td>{{ bid.product_name.get_object_type_display }}</td>
                           <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000">
                               {{ bid.product_name.product_name }}</a></td>
                           <td>{{ bid.product_name.seller }}</td>
@@ -207,10 +204,8 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
-                      {% comment %}
-                      <th>#</th>
-                      {% endcomment %}
-                      <th>Product</th>
+                      <th>Type</th>
+                      <th>Name</th>
                       <th>Description</th>
                       <th>Purchase Price</th>
                       <th>Purchase time</th>
@@ -222,9 +217,7 @@
                     {% for item in user_purchases %}
 
                         <tr class="alert-info">
-                        {% comment %}
-                          <td>1</td>
-                        {% endcomment %}
+                          <td>{{ item.get_object_type_display }}</td>
                           <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
                           <td>{{ item.description }}</td>
                           <td>{{ item.best_bid }}</td>

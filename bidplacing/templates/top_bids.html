@@ -36,9 +36,9 @@
                 <table class="table table-hover table-bordered">
                   <thead>
                     <tr>
-                      <th>#</th>
+                      <th>Type</th>
                       <th>Bidder</th>
-                      <th>Product</th>
+                      <th>Name</th>
                       <th>Seller</th>
                       <th>Start price</th>
                       <th>User's bid </th>
@@ -52,7 +52,7 @@
 
                   {% for bid in top_bids %}
                          <tr>
-                          <td>{{ forloop.counter }}</td>
+                          <td>{{ bid.product_name.get_object_type_display }}</td>
                           <td>{{ bid.bidder }}</td>
                           <td><a href="{% url 'bidplacing:show_product' bid.product_name.id %}" style="color:#000000">
                               {{ bid.product_name.product_name }}</a></td>

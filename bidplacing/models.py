@@ -226,8 +226,11 @@ class Product(models.Model):
 
     def get_best_bidder(self):
         product = Product.objects.get(id=self.id)
-        last_product_bid = product.bid_set.all().order_by('bidding_time').reverse()[0]
-        return last_product_bid.bidder
+        product_bids = product.bid_set.all()
+        if product_bids:
+            return product_bids.order_by('bidding_time').reverse()[0].bidder
+        else:
+            return None
 
     def get_best_bid(self):
         product = Product.objects.get(id=self.id)
@@ -247,7 +250,7 @@ class Bid(models.Model):
     @classmethod
     def create(cls, product_name, bidder, amount):
         bid = cls(product_name=product_name, bidder=bidder, amount=amount)
-        # do something with the book
+        # do something with the bid
         return bid
 
     def __unicode__(self):

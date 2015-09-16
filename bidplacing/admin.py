@@ -10,13 +10,19 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    fields = ['product_name', 'description', 'start_price',
-              'deadline_time', 'seller', 'category']
-    list_display = ['product_name', 'description', 'start_price',
-                    'insertion_time', 'deadline_time', 'seller', 'category']
-    search_fields = ['product_name']
+    fields = ['product_name', 'deadline_time', 'seller', 'start_price', ]
+    list_display = ['product_name', 'deadline_time', 'seller', 'start_price',
+                    'best_bidder', 'best_bid', ]
+    search_fields = ['product_name', ]
     list_filter = ('deadline_time',)
-    #date_hierarchy = 'deadline_time'
+
+    def best_bid(self, obj):
+        return obj.get_best_bid()
+    best_bid.short_description = "current price"
+
+    def best_bidder(self, obj):
+        return obj.get_best_bidder()
+    best_bidder.short_description = "best bidder"
 
 
 class BidAdmin(admin.ModelAdmin):

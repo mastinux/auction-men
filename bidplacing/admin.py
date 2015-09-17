@@ -10,7 +10,8 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    fields = ['product_name', 'deadline_time', 'seller', 'start_price', ]
+    fields = ['product_name', 'deadline_time', 'seller', 'start_price',
+              'category']
     list_display = ['product_name', 'deadline_time', 'seller', 'start_price',
                     'best_bidder', 'best_bid', ]
     search_fields = ['product_name', ]

@@ -9,8 +9,7 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^bidplacing/', include('bidplacing.urls', namespace='bidplacing')),
 
-#    url('^$', 'auction_men.views.main_page', name='main_page'),
-#TODO : understand why is called index.html in templates/ and not in bidplacing/templates
+    #    url('^$', 'auction_men.views.main_page', name='main_page'),
     url(r'^$', 'bidplacing.views.main_page', name='main_page'),
 
     # url(r'auth/', include('auth_system.urls', namespace='auth')),

@@ -12,7 +12,7 @@
             {% endcomment %}
             <form action="" method="post" enctype="multipart/form-data">{% csrf_token %}
                 {{ form | crispy }}
-                <input type="submit" value="Add" />
+                <input class="btn btn-primary" type="submit" value="Add" />
             </form>
         </div>
     </div>

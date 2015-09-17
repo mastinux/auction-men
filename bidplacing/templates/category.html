@@ -43,6 +43,7 @@
     {% endif %}
 
     {% if children_categories %}
+        <h1>Related categories</h1>
         <hr>
         {% for cat_id,children_category_products in children_categories.iteritems %}
             {% if children_category_products %}

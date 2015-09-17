@@ -14,6 +14,11 @@ class Category(models.Model):
     parent = models.ForeignKey('self', null=True, blank=True, default=None)
     level = models.IntegerField(default=0)
 
+    @classmethod
+    def create(cls, cat_name, parent, level):
+        cat = cls(category_name=cat_name, parent=parent, level=level)
+        return cat
+
     def __unicode__(self):
         string = "%s [parent:%s, level=%s]" % (self.category_name, self.parent, self.level)
         return string

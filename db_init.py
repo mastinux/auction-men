@@ -9,6 +9,7 @@ import argparse
 sys.path.append(os.getcwd())
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'auction_men.settings')
 from bidplacing.models import Category
+from PIL import Image
 
 __author__ = 'neuro'
 
@@ -49,6 +50,22 @@ def save_categories():
             except IntegrityError:
                 pass
 
+def resize_images():
+    dir = './bidplacing/templates/media/'
+    for im in os.listdir(dir):
+        print im
+        image = Image.open(dir + im)
+        (width, height) = image.size
+
+        if width / 150 < height / 150:
+            factor = height / 150
+        else:
+          factor = width / 150
+
+        size = (width / factor, height / factor)
+        image = image.resize(size, Image.ANTIALIAS)
+        image.save(dir + im)
+
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Script for db init using data\
@@ -70,9 +87,4 @@ if __name__ == '__main__':
 
     namespace = parser.parse_args()
 
-    if namespace.amazon:
-        cats =      (AMAZON)
-        sys.exit(0)
-    if namespace.cat:
-        save_categories
-        sys.exit(0)
+    resize_images()

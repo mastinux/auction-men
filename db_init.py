@@ -71,7 +71,7 @@ if __name__ == '__main__':
     namespace = parser.parse_args()
 
     if namespace.amazon:
-        cats = create_categories_file(AMAZON)
+        cats =      (AMAZON)
         sys.exit(0)
     if namespace.cat:
         save_categories

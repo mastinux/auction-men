@@ -79,7 +79,7 @@ Auction-men provide the useful feature of email confirmation after you sign up. 
     
 - If you are running auctions_men on `localhost:8000` for example, you must change the `domain name` in django:
 
-    - type `localhost:8000/admin'
+    - type `localhost:8000/admin`
     - in site administration panel, go to Sites
     - click on the only record and change `domain name` and `display name` to `localhost:8000`
      

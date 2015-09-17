@@ -74,7 +74,7 @@ class Product(models.Model):
         return string
 
     def save(self, *args, **kwargs):
-        if self.deadline_time.__le__(timezone.now()):
+        if self.deadline_time <= (timezone.now()):
             raise ValueError("Deadline_time could not be before now")
         if self.start_price < 0:
             raise ValueError("Start_price could not be negative")
@@ -277,11 +277,12 @@ class Bid(models.Model):
         products = set([ub.product_name for ub in user_bids])
 
         last_bids = list()
+
         for p in products:
             product_bids = Bid.objects.filter(bidder=user, product_name=p.id).order_by('-bidding_time')
             last_bids.append(product_bids[0])
 
-        return last_bids
+        return sorted(last_bids, key=lambda bid: bid.product_name.deadline_time, reverse=True)
 
     @staticmethod
     def get_expired_placed_bids(username):

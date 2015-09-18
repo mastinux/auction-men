@@ -22,7 +22,6 @@
 
 {% block content %}
 
-    <!-- div to have left categories bar-->
     <div class="col-md-12">
 
     	<div class="row">
@@ -39,7 +38,6 @@
                 <div class="col-md-4">
                     <div class="row ">
                         <div class="col-md-5">
-                            <!-- <img src="//placehold.it/150x150" class="img"/> -->
                             <img src="{{ MEDIA_URL }}{{ product.product_picture }}" class="img-circle center-block"/>
                         </div>
                         {% if user.is_authenticated and product.get_remaining_time != None %}
@@ -76,10 +74,6 @@
                                         expiringTime.setSeconds(expiringTime.getSeconds() + {{ product.get_remaining_time.seconds }})
                                         $('#currentCountdown').countdown({until: expiringTime});
                                     </script>
-                                    {% comment %}
-                                    <h4>Remaining time : {{ product.get_remaining_time }}</h4>
-                                    <h4>Deadline time : {{ product.deadline_time }}</h4>
-                                    {% endcomment %}
                                 {% endif %}
                             </div>
                         {% endif %}
@@ -108,12 +102,12 @@
                 </div>
 
             </div>
-        </div><!--/col-row-->
+        </div>
 
         <div class="row">
             {% if suggested_products %}
                 <hr>
-                <h1>Bidder who bade for this product also bade for these</h1>
+                <h1>Bidders who bade for this product also bade for these</h1>
                 <hr>
                 <div class="row row-horizon">
                     {% for item in suggested_products|slice:":" %}
@@ -139,6 +133,6 @@
             {% endif %}
         </div>
 
-    </div><!--/col-md-12-->
+    </div>
 
 {% endblock %}

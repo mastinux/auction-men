@@ -36,7 +36,6 @@
     </div>
 {% endif %}
 
-<!-- TEST DIV-->
 {% if last_insertions  %}
     <h1>Last insertions</h1>
     <hr>
@@ -50,17 +49,6 @@
         </div>
     </div>
 {% endif %}
-{% comment %}
-<div class="row">
-    <div class="col-md-12">
-        <h1>Last insertions</h1>
-        <hr>
-        {% for item in last_insertions %}
-            {% include 'product_card.html' with product=item %}
-        {% endfor %}
-    </div>
-</div>
-{% endcomment %}
 
 {% if user.is_authenticated  and suggested_products %}
     <h1>Recommended for you</h1>
@@ -73,6 +61,7 @@
                 {% endfor %}
             </div>
         </div>
+    </div>
 {% endif %}
 
 {% endblock %}

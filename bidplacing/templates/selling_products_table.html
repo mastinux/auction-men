@@ -4,20 +4,14 @@
         <tr>
           <th>Type</th>
           <th>Name</th>
-            {% comment %}
-          <th>Description</th>
-            {% endcomment %}
           <th>Start price</th>
           <th>Current Price</th>
           <th>Insertion time</th>
-          {% comment %}
-          <th>Deadline time</th>
-          {% endcomment %}
           <th>Time left </th>
         </tr>
       </thead>
+
       <tbody id="items">
-    
         {% for item in user_selling %}
     
             {% if item.get_remaining_time == None %}
@@ -29,15 +23,9 @@
             {% endif %}
               <td>{{ item.get_object_type_display }}</td>
               <td><a href="{% url 'bidplacing:show_product' item.id %}" style="color:#000000">{{ item.product_name }}</a></td>
-              {% comment %}
-              <td>{{ item.description }}</td>
-              {% endcomment %}
               <td>{{ item.start_price }}</td>
               <td>{{ item.best_bid }}</td>
               <td>{{ item.insertion_time.date }}</td>
-              {% comment %}
-              <td>{{ item.deadline_time }}</td>
-              {% endcomment %}
               {% if item.get_remaining_time == None %}
                 <td><strong>Sold</strong></td>
               {% else %}
@@ -65,4 +53,4 @@
             </ul>
         </div>
     </div>
-</div><!--/table-resp-->
+</div>

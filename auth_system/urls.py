@@ -5,8 +5,6 @@ from django.contrib.auth.views import login
 from . import views
 
 urlpatterns = [
-    #url(r'^signup', views.index, name='index'),
-    #url(r'^login', views.login_page, name='login_page'),
     url(
         regex=r'^login/$',
         view=login,

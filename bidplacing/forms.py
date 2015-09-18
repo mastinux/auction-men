@@ -1,9 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.forms.extras import SelectDateWidget
 import datetime
-
-__author__ = 'mastinux'
-
 from django import forms
 from models import Bid
 from models import Product

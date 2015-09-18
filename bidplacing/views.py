@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import ValidationError
 from django.http.response import HttpResponseRedirect
 from django.template import loader, RequestContext
 from django.http import HttpResponse
@@ -7,11 +6,7 @@ from models import *
 from forms import BidForm, ProductForm
 from urllib import unquote
 from django.contrib.auth.models import User
-import pprint as pp
 from django.shortcuts import render
-from PIL import Image
-from auction_men import settings
-from os import path
 
 
 def retrieve_basic_info(request):
@@ -31,11 +26,6 @@ def retrieve_basic_info(request):
     top_categories = Category.get_top_categories()
     context['top_categories'] = top_categories
 
-    #category_children = {}
-    #for c in top_categories:
-    #    category_children[c.id] = c.get_children_category()
-    #context['category_children'] = category_children
-
     return context
 
 
@@ -49,11 +39,11 @@ def main_page(request):
     last_insertions = Product.get_last_inserts(d=1)
     context['last_insertions'] = last_insertions.exclude(seller=request.user.id)
 
-    if not request.user.is_authenticated():
-        request.session['message'] = 'To bid register or log-in, please'
-    else:
+    if request.user.is_authenticated():
         suggested_products = Product.get_home_suggested_products(request.user)
         context['suggested_products'] = suggested_products
+    else:
+        context['message'] = 'To bid register or log-in, please'
 
     context['form'] = BidForm()
 
@@ -285,21 +275,16 @@ def update_profile(request):
 
 @login_required
 def new_product(request):
-    # if this is a POST request we need to process the form data
     if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
         form = ProductForm(request.POST, request.FILES)
-        # check whether it's valid:
+
         if form.is_valid():
-            # process the data in form.cleaned_data as required
             product = form.save(commit=False)
             product.seller = request.user
             product.save()
 
-            # redirect to a new URL:
             request.session['message'] = 'Product successfully added'
             return HttpResponseRedirect('/')
-    # if a GET (or any other method) we'll create a blank form
     else:
         context = retrieve_basic_info(request)
         form = ProductForm()
@@ -311,6 +296,9 @@ def new_product(request):
 
 def show_product(request, product_id):
     context = retrieve_basic_info(request)
+
+    if not request.user.is_authenticated():
+        context['message'] = 'To bid register or log-in, please'
 
     product = Product.objects.get(id=product_id)
     context['product'] = product

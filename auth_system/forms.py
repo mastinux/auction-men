@@ -9,8 +9,6 @@ class RegisterForm(forms.ModelForm):
         model = AbstractUser
         fields = ['username', 'email', 'password']
 
-
-
     def clean_username(self):
         username = self.cleaned_data['username']
         print username
@@ -20,6 +18,3 @@ class RegisterForm(forms.ModelForm):
     #   email = self.cleaned_data
     #    print email
     #    return email
-
-
-

@@ -1,7 +1,7 @@
 #Auction-men
 Auction-men is a platform where users can insert auctions about products and services, place a bid for one or more of them. When the deadline is reached, user that placed the largest bid wins the auction.
 For authenticated users, in any moment it's possible to have an overview of the running auction, place a bid and watch the bid history and purchased history of products.
-Users that are not logged in are able to view only recents auction as guests.
+Users that are not logged in are able to view only recent auction as guests.
 
 ##Installation
 To enjoy auction-men follow these step, in the same order they're written.

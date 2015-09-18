@@ -1,11 +1,7 @@
 from django.contrib.auth.forms import UserCreationForm
-from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext, loader
 from django.contrib.auth import authenticate, login, logout
-
-import pprint as pp
-from django.utils.http import urlencode
 
 
 def login_page(request):
@@ -31,13 +27,12 @@ def register_page(request):
             login(request, new_user)
 
             # message saved in session because in that way message can be used
-            # from the view after redirect (HttpResponseRedirect doon't allow
+            # from the view after redirect (HttpResponseRedirect don't allow
             # to pass parameters)
             request.session['message'] = 'Thanks for subscribing'
             return HttpResponseRedirect('/')
     else:
-        context = {}
-        context['form'] = form
+        context = {'form': form}
         context = RequestContext(request, context)
         return HttpResponse(template.render(context))
 

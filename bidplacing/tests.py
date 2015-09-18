@@ -1,11 +1,6 @@
 from django.test import TestCase, RequestFactory, Client
-from bidplacing.models import *
-from django.utils import timezone
-from django.contrib.auth.models import AnonymousUser
-from datetime import timedelta, datetime, time, date
 from django.core.urlresolvers import reverse
 from bidplacing.views import *
-from bidplacing import forms
 
 
 class ModelsTestCase(TestCase):
@@ -21,6 +16,7 @@ class ModelsTestCase(TestCase):
     def testPurchasedProductsPageRedirect(self):
         self.client.logout()
         response = self.client.get(reverse('bidplacing:purchased_products_page'))
+
         self.assertEqual(response.status_code, 302)
 
     def testAddProduct(self):
@@ -38,7 +34,3 @@ class ModelsTestCase(TestCase):
                             'category': self.c})
 
         self.assertFalse(form.is_valid())
-
-    #TODO complete last test
-    def testPlaceBadBid(self):
-        print None

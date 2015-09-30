@@ -155,6 +155,9 @@ def profile_page(request):
 def category_page(request, cat_id):
     context = retrieve_basic_info(request)
 
+    if not request.user.is_authenticated():
+        context['message'] = 'To bid register or log-in, please'
+
     category_id = cat_id
     category_object = Category.objects.get(id=category_id)
     context['category'] = category_object

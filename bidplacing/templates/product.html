@@ -40,12 +40,15 @@
                         <div class="col-md-5">
                             <img src="{{ MEDIA_URL }}{{ product.product_picture }}" class="img-circle center-block"/>
                         </div>
-                        {% if user.is_authenticated and product.get_remaining_time != None %}
+                        {% if user.is_authenticated %}
                             <div class="col-md-7">
                                 {% if user.id == product.seller.id %}
                                     <h3 class="text-center"><span class="label label-info">Yet your!</span></h3>
                                 {% elif user.id == product.get_best_bidder.id %}
                                     <h3 class="text-center"><span class="label label-success">You are the best bidder</span></h3>
+                                {% elif not product.get_remaining_time %}
+                                    <h3 class="text-center"><span class="label label-info">Expired</span></h3>
+                                    <h4>Purchase time : {{ product.deadline_time }}</h4>
                                 {% else %}
                                     <form method="post" class="form" action="{% url 'bidplacing:place_bid' product.id%}" >
                                     {% csrf_token %}
@@ -61,10 +64,7 @@
                                     </form>
                                 {% endif %}
                                 <br><br><br>
-                                {% if product.get_remaining_time == None %}
-                                    <h4><strong>Expired</strong></h4>
-                                    <h4>Purchase time : {{ product.deadline_time }}</h4>
-                                {% else %}
+                                {% if product.get_remaining_time%}
                                     <h4 class="text-center"><b>Remaining time:</b></h4>
                                     <!-- PORCA LA MADOMPA -->
                                     <h4><span id="currentCountdown" class="countdown"></span></h4>

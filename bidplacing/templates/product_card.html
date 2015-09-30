@@ -19,6 +19,10 @@
                                     <div class="row" style="margin-left: 1%">
                                         <h4><div class="label label-success">You are the best bidder</div></h4>
                                     </div>
+                                {% elif not product.get_remaining_time %}
+                                    <div class="row" style="margin-left: 1%">
+                                        <h4><div class="label label-info">Expired</div></h4>
+                                    </div>
                                 {% else %}
                                     <input type="number" class="form-control" placeholder="Amount"
                                         step="0.01" value="{{ product.get_best_bid }}"
